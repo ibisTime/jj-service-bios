@@ -1,0 +1,25 @@
+//
+//  ZHPrefixHeader.pch
+//  ZHBusiness
+//
+//  Created by  tianlei on 2016/12/12.
+//  Copyright © 2016年  tianlei. All rights reserved.
+//
+#ifdef __OBJC__
+
+#ifndef ZHPrefixHeader_pch
+#define ZHPrefixHeader_pch
+
+#define ZIP_COEFFICIENT 0.5
+#import "TLHeader.h"
+#import "ZHUser.h"
+//#import "ZHShop.h"
+
+#import "CDCompany.h"
+
+#import "Masonry.h"
+
+#import "UIColor+theme.h"
+
+#endif /* ZHPrefixHeader_pch */
+#endif
