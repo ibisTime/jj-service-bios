@@ -15,6 +15,8 @@
 //    CompanyAptitudeStatusRefuse
 //};
 
+//类型(1 摄影/2 拍摄 3培训/ 4店铺代运营/5培训/6美工)
+
 @interface CDCompanyAptitudeModel : TLBaseModel
 
 @property (nonatomic, copy) NSString *code;

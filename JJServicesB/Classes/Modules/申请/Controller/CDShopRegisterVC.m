@@ -37,6 +37,8 @@
 @implementation CDShopRegisterVC
 
 
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -284,7 +286,6 @@
     
     self.imageUpLoadView = [[CDImageUpLoadView alloc] initWithFrame:CGRectMake(0,  self.shopNameTf.yy + 1, SCREEN_WIDTH, 80)];
     [self.bgSV addSubview:self.imageUpLoadView];
-    
     self.imageUpLoadView.titleLbl.text = cardStr;
     [self.imageUpLoadView.uploadBtn addTarget:self action:@selector(chooseIdCardPhoto) forControlEvents:UIControlEventTouchUpInside];
     

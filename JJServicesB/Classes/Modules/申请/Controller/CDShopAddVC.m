@@ -18,6 +18,19 @@
 
 @implementation CDShopAddVC
 
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    self.navigationController.navigationBar.barTintColor = [UIColor themeColor];
+    self.navigationController.navigationBar.translucent = NO;
+    
+    [self.navigationController.navigationBar setBackgroundImage:[[UIColor themeColor] convertToImage] forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [[UIColor themeColor] convertToImage];
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"商家入驻";

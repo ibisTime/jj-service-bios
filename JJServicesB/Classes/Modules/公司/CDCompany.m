@@ -104,6 +104,11 @@
     
 }
 
+- (NSArray<NSString *> *)detailPics {
+    
+    return [self.advPic componentsSeparatedByString:@"||"];
+}
+
 - (void)changCompanyInfoWithDict:(NSDictionary *)dict {
     
     
@@ -115,6 +120,27 @@
     self.corporation = dict[@"corporation"];
     self.remark = dict[@"remark"];
 
+    self.city = dict[@"city"];
+    self.province = dict[@"province"];
+    self.area = dict[@"area"];
+    self.latitude = dict[@"latitude"];
+    self.longitude = dict[@"longitude"];
+    self.address = dict[@"address"];
+
+    //图片
+    self.advPic = dict[@"advPic"];
+    self.logo = dict[@"logo"];
+    self.pic = dict[@"pic"];
+    
+    
+    //
+    self.scale = dict[@"scale"];
+    self.slogan = dict[@"slogan"];
+    self.desc = dict[@"description"];
+    self.mobile = dict[@"mobile"];
+    self.registeredCapital = dict[@"registeredCapital"];
+    self.regtime = dict[@"regtime"];
+    
     
     if (dict[@"gsQualify"]) {
      

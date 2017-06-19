@@ -29,11 +29,6 @@
 @property (nonatomic,strong) TLTextField *detailAddressTf; //详细地址
 @property (nonatomic,strong) TLTextField *shopLocationTf;
 @property (nonatomic,strong) TLTextField *shopPhoneTf;
-
-@property (nonatomic,strong) TLTextField *smsMobileTf;//短信电话
-
-
-
 @property (nonatomic,strong) TLTextField *sloganTf;
 @property (nonatomic, strong) TLTextView *advTextView;
 
@@ -42,32 +37,28 @@
 @property (nonatomic,strong) TLTextField *rateTf;
 @property (nonatomic,strong) TLTextField *locationDetailAddressTf;
 @property (nonatomic, strong) TLTextField *scaleTf;
-@property (nonatomic, strong) CDImageUpLoadView *scaleImageView;
+@property (nonatomic, strong) CDImageUpLoadView *thumailImageUpLoadView;
 
-//拒绝的原因的标签
-@property (nonatomic,strong) UILabel *refuseLbl;
+@property (nonatomic, strong) TLTextField *birthTf; //成立时间
+@property (nonatomic, strong) TLTextField *capitalTf; //注册资本
+
+
 
 @property (nonatomic,strong) AddressPickerView *addressPicker;
-//@property (nonatomic,strong) UIButton *locationBtn;//定位的按钮
-
-//@property (nonatomic,strong) UILabel *coverHintLbl;
 @property (nonatomic,strong) UIImageView *coverImageView;
 @property (nonatomic,strong) ZHGoodsDetailEditView *shopDetailView;
 
-
-
-
 @property (nonatomic,strong) NSString *longitude;
 @property (nonatomic,strong) NSString *latitude;
-
-
 @property (nonatomic, copy) NSString *province;
 @property (nonatomic, copy) NSString *city;
 @property (nonatomic, copy) NSString *area;
 
+
 //记录封面图片有更换过吗
-@property (nonatomic,assign) BOOL coverImgChanged;
-@property (nonatomic,assign) BOOL detailImgsChanged;
+@property (nonatomic, assign) BOOL thumbilImageChanged;
+@property (nonatomic, assign) BOOL coverImgChanged;
+@property (nonatomic, assign) BOOL detailImgsChanged;
 
 @end
 
@@ -89,93 +80,71 @@
     self.title = @"公司管理";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"提交" style:UIBarButtonItemStylePlain target:self action:@selector(save)];
     
-    //待审核状态，不能修改
-    if ([[CDCompany company].status isEqualToString:@"0"]) {
-        self.navigationItem.rightBarButtonItem = nil;
-    }
-    
-//    UITableView *shopInfoTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 64) style:UITableViewStyleGrouped];
-//    shopInfoTableView.delegate = self;
-//    shopInfoTableView.dataSource = self;
-//    [self.view addSubview:shopInfoTableView];
-//    self.shopInfoTableView = shopInfoTableView;
-    
-    
-    
-    
-    
     self.coverImgChanged = NO;
     _uploadGroup = dispatch_group_create();
     
-    //表头 和 表尾
-    [self setUpTableViewHeaderAndFooter];
     
-    //
-    self.coverImageView.image = [UIImage imageNamed:@"店铺"];
-    if (1) {
-        
-        CDCompany *tempShop = [CDCompany company];
-        
-        //审核不通过显示原因
-//        if ([tempShop.status isEqualToString:@"91"]) {
-//            
-//            self.coverHintLbl.y =   self.coverHintLbl.y - 20;
-//            self.refuseLbl.text = [NSString stringWithFormat:@"审核失败原因: %@",[CDCompany company].remark];
-//        }
-
-
-        //
-        self.shopNameTf.text = tempShop.name;
-
-        //位置信息
-//        self.shopAddressTf.text = [[tempShop.province add:tempShop.city] add:tempShop.area];
-//        self.addressDict[@"province"] = tempShop.province;
-//        self.addressDict[@"city"] = tempShop.city;
-//        self.addressDict[@"area"] = tempShop.area;
-//        self.detailAddressTf.text = tempShop.address;
-//        self.longitude = tempShop.longitude;
-//        self.latitude = tempShop.latitude;
-//        
-//        self.shopPhoneTf.text = tempShop.bookMobile;
-//        self.smsMobileTf.text= tempShop.smsMobile;
-//        
-////        self.adsTf.text = tempShop.slogan;
-//        self.advTextView.text = tempShop.slogan;
-//        self.leagleNameTf.text = tempShop.legalPersonName;
-//        
-//        //推荐人手机号码
-//        self.referrerMobileTf.text = tempShop.refereeMobile;
-//        self.referrerMobileTf.enabled = NO;
-//      
-//        
-//        self.shopDetailView.detailTextView.text = tempShop.descriptionShop;
-//        //商品详情图片
-//        self.shopDetailView.images = [NSMutableArray arrayWithArray:[tempShop detailPics]];
-//        
-//        CLGeocoder *geoCodeer = [[CLGeocoder alloc] init];
-//        CLLocation *location = [[CLLocation alloc] initWithLatitude:[tempShop.latitude doubleValue] longitude:[tempShop.longitude doubleValue]];
-//        
-        //地理编码
-//        [geoCodeer reverseGeocodeLocation:location completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
-//            
-//            if (!error) {
-//                
-//                CLPlacemark *placeMark = placemarks[0];
-//                
-//              self.locationDetailAddressTf.alpha = 1;
-//               self.locationDetailAddressTf.text = [NSString stringWithFormat:@"%@%@%@",placeMark.locality? : @"",placeMark.subLocality? : @"",placeMark.thoroughfare ? : @""];
-//            }
-//            
-//        }];
-        
-    }
+    [self setPlaceholderViewTitle:@"加载失败" operationTitle:@"重新加载"];
     
+    //先加载店铺信息
+    [self tl_placeholderOperation];
     
-    [self setUpUI];
+  
     //
     
     
 }
+
+- (void)tl_placeholderOperation {
+
+    [TLProgressHUD showWithStatus:nil];
+    [[CDCompany company] getShopInfoSuccess:^(NSDictionary *shopDict) {
+        
+        [TLProgressHUD dismiss];
+
+        //表头 和 表尾
+        [self setUpTableViewHeaderAndFooter];
+        
+        [self setUpUI];
+        [self initData];
+        
+    } failure:^(NSError *error) {
+        [TLProgressHUD dismiss];
+
+        
+    }];
+
+}
+
+- (void)initData {
+ 
+    CDCompany *company = [CDCompany company];
+    
+    [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:[company.logo convertThumbnailImageUrl]]];
+
+    
+    self.shopNameTf.text = company.name;
+    self.shopAddressTf.text = [NSString stringWithFormat:@"%@%@%@",company.province,company.city,company.area];
+    self.detailAddressTf.text = company.address;
+    self.locationDetailAddressTf.text = [NSString stringWithFormat:@"Lng:%@ Lat:%@",[NSString stringWithFormat:@"%.2lf",[company.longitude floatValue]],[NSString stringWithFormat:@"%.2lf",[company.latitude floatValue]]];
+    
+    //
+    self.shopPhoneTf.text = company.mobile;
+    self.scaleTf.text = company.scale;
+    
+    NSString *thumailStr = [company.pic convertThumbnailImageUrl];
+    [self.thumailImageUpLoadView.imageView sd_setImageWithURL:[NSURL URLWithString:thumailStr]];
+    
+    //
+    self.capitalTf.text = company.registeredCapital;
+    self.birthTf.text = company.regtime;
+    self.advTextView.text = company.slogan;
+    
+    self.shopDetailView.detailTextView.text = company.desc;
+    self.shopDetailView.images =  company.detailPics.mutableCopy;
+    
+}
+
 
 #pragma mark- 去定位
 - (void)goMap {
@@ -192,6 +161,8 @@
     [self.navigationController pushViewController:mapVC animated:YES];
     
 }
+
+
 
 - (void)setUpUI {
 
@@ -239,20 +210,32 @@
     self.shopPhoneTf
          = [self tfWithFrame:CGRectMake(0, self.locationDetailAddressTf.yy , SCREEN_WIDTH, 45) leftTitle:@"联系电话" placeholder:@"请输入联系电话"];
     [bgSV addSubview:self.shopPhoneTf];
+    self.shopPhoneTf.keyboardType = UIKeyboardTypeNumberPad;
     
     //此处应该有-----规模
     self.scaleTf
     = [self tfWithFrame:CGRectMake(0, self.shopPhoneTf.yy , SCREEN_WIDTH, 45) leftTitle:@"规模" placeholder:@"请输入规模"];
     [bgSV addSubview:self.scaleTf];
     
-    self.scaleImageView = [[CDImageUpLoadView alloc] initWithFrame:CGRectMake(0, self.scaleTf.yy, SCREEN_WIDTH, 80)];
-    [bgSV addSubview:self.scaleImageView];
-    self.scaleImageView.titleLbl.text = @"缩略图";
-    [self.scaleImageView.uploadBtn addTarget:self action:@selector(chooseIdCardPhoto) forControlEvents:UIControlEventTouchUpInside];
+    self.thumailImageUpLoadView = [[CDImageUpLoadView alloc] initWithFrame:CGRectMake(0, self.scaleTf.yy, SCREEN_WIDTH, 80)];
+    [bgSV addSubview:self.thumailImageUpLoadView];
+    self.thumailImageUpLoadView.titleLbl.text = @"缩略图";
+    [self.thumailImageUpLoadView.uploadBtn addTarget:self action:@selector(selectImg:) forControlEvents:UIControlEventTouchUpInside];
 
+    //
+    self.capitalTf
+    = [self tfWithFrame:CGRectMake(0, self.thumailImageUpLoadView.yy + 0.5, SCREEN_WIDTH, 45) leftTitle:@"注册资本" placeholder:@"请输入注册资本"];
+    [bgSV addSubview:self.capitalTf];
+    self.capitalTf.keyboardType = UIKeyboardTypeNumberPad;
+    
+    //时间
+    self.birthTf
+    = [self tfWithFrame:CGRectMake(0, self.capitalTf.yy , SCREEN_WIDTH, 45) leftTitle:@"成立时间" placeholder:@"请输入成立时间"];
+    [bgSV addSubview:self.birthTf];
+    
     //广告语
     self.sloganTf
-    = [self tfWithFrame:CGRectMake(0, self.scaleImageView.yy , SCREEN_WIDTH, 70) leftTitle:@"广告语" placeholder:nil];
+    = [self tfWithFrame:CGRectMake(0, self.birthTf.yy , SCREEN_WIDTH, 70) leftTitle:@"广告语" placeholder:nil];
     [bgSV addSubview:self.sloganTf];
     self.sloganTf.enabled = NO;
     
@@ -265,14 +248,14 @@
     
     //简介
     self.shopDetailView = [[ZHGoodsDetailEditView alloc] initWithFrame:CGRectMake(0, self.self.sloganTf.yy, SCREEN_WIDTH, 200)];
-    self.shopDetailView.placholder = @"请就关于您的店铺做一些20字以上60字以内的简单描述";
-    self.shopDetailView.typeNameLbl.text = @"店铺描述";
+    self.shopDetailView.placholder = @"请就关于您的公司做一些简单描述";
+    self.shopDetailView.typeNameLbl.text = @"公司描述";
     [bgSV addSubview:self.shopDetailView];
     
     //
     UIButton *confitmBtn = [UIButton zhBtnWithFrame:CGRectMake(20, self.shopDetailView.yy + 30, SCREEN_WIDTH - 40, 45) title:@"提交"];
     [bgSV addSubview:confitmBtn];
-    
+    [confitmBtn addTarget:self action:@selector(save) forControlEvents:UIControlEventTouchUpInside];
     //
     bgSV.contentSize = CGSizeMake(SCREEN_WIDTH, confitmBtn.yy + 20);
     
@@ -315,6 +298,7 @@
     }
     
     UIImage *coverImg = self.coverImageView.image;
+    UIImage *thumailImg = self.thumailImageUpLoadView.imageView.image;
     
     _uploadGroup = dispatch_group_create();
     
@@ -352,12 +336,18 @@
     }
     
     
+    //封面图片
     NSString *coverImgKey = [TLUploadManager imageNameByImage:coverImg];
     __block NSString *coverImgSuccessKey;
     
+    //缩略图
+    NSString *thumbilImgKey = [TLUploadManager imageNameByImage:thumailImg];
+    __block NSString *thumbilImgSuccessKey;
+    
+    
     
     //需要上传图片
-    if (self.coverImgChanged || self.detailImgsChanged) {//----------
+    if (self.coverImgChanged || self.detailImgsChanged || self.thumbilImageChanged) {//----------
         
         TLNetworking *getUploadToken = [TLNetworking new];
         getUploadToken.showView = self.view;
@@ -372,11 +362,14 @@
             QNUploadManager *uploadManager = [TLUploadManager qnUploadManager];
             NSString *token = responseObject[@"data"][@"uploadToken"];
             
+        
+            
             //封面图片上传
             if(self.coverImgChanged){
                 dispatch_group_enter(_uploadGroup);
                 NSData *data =  UIImageJPEGRepresentation(coverImg, 1);
                 [uploadManager putData:data key:coverImgKey token:token complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
+                    
                     dispatch_group_leave(_uploadGroup);
                     if (info.error) {
                         
@@ -385,6 +378,25 @@
                         
                     }
                     coverImgSuccessKey = key;
+                    
+                } option:nil];
+                
+            }
+            
+            //缩略图上传
+            if (self.thumbilImageChanged) {
+                
+                dispatch_group_enter(_uploadGroup);
+                NSData *data =  UIImageJPEGRepresentation(thumailImg, 1);
+                [uploadManager putData:data key:thumbilImgKey token:token complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
+                    dispatch_group_leave(_uploadGroup);
+                    if (info.error) {
+                        
+                        [TLAlert alertWithError:@"缩略图片上传失败"];
+                        return ;
+                        
+                    }
+                    thumbilImgSuccessKey = key;
                     
                 } option:nil];
                 
@@ -419,8 +431,13 @@
             if (!self.coverImgChanged) {
                 
 #warning --mark dangrous
-//                coverImgSuccessKey = [CDCompany company].advPic;
+                coverImgSuccessKey = [CDCompany company].logo;
                 
+            }
+            
+            if (!self.thumbilImageChanged) {
+                
+                thumbilImgSuccessKey = [CDCompany company].pic;
             }
             
             dispatch_group_t group  = _uploadGroup;
@@ -432,12 +449,17 @@
                     return ;
                 }
                 
+                if (!thumbilImgSuccessKey) {
+                    return ;
+                }
+                
                 if (detailImgsUploadSuccessKeys.count != self.shopDetailView.images.count) {
                     return;
                 }
                 
-                [self upLoadImageSuccess:coverImgSuccessKey detailImageKeys:[detailImgsUploadSuccessKeys componentsJoinedByString:@"||"]];
-                
+                //
+                [self upLoadImageSuccess:coverImgSuccessKey thumailImageKey:thumbilImgSuccessKey detailImageKeys:[detailImgsUploadSuccessKeys componentsJoinedByString:@"||"]];
+
             });
             
             
@@ -448,48 +470,42 @@
     } else {
         
         
-//        [self upLoadImageSuccess:[CDCompany company].advPic detailImageKeys:[CDCompany company].pic];
+       [self upLoadImageSuccess:[CDCompany company].slogan thumailImageKey:[CDCompany company].pic detailImageKeys:[CDCompany company].advPic];
         
     }
     
 }
 
 #pragma mark- 提交信息
-- (void)upLoadImageSuccess:(NSString *)coverImageKey detailImageKeys:(NSString *)detailImgKeys {
+- (void)upLoadImageSuccess:(NSString *)coverImageKey thumailImageKey:(NSString *)thumailImageKey detailImageKeys:(NSString *)detailImgKeys {
     
     TLNetworking *http = [TLNetworking new];
     http.showView = self.view;
     
-    if ([CDCompany company].code) {
-        http.code = SHOP_RE_ADD; //重新提交
-        http.parameters[@"code"] = [CDCompany company].code;
-        http.parameters[@"updater"] = [ZHUser user].userId;
-        
-    } else {
-        
-        http.code = SHOP_ADD; //第一次提交
-        
-    }
-    
-    http.parameters[@"advPic"] = coverImageKey; //封面
-//    http.parameters[@"type"] = self.shopType;
-    http.parameters[@"name"] = self.shopNameTf.text;
-    
-    http.parameters[@"province"] = self.province;
-    http.parameters[@"city"] = self.city;
-    http.parameters[@"area"] = self.area;
-    
-    http.parameters[@"address"] = self.detailAddressTf.text; //详细地址
+   http.code = @"612052"; //重新提交
+   http.parameters[@"code"] = [CDCompany company].code;
+   http.parameters[@"updater"] = [ZHUser user].userId;
+   
+   //封面
+   http.parameters[@"logo"] = coverImageKey;
+   http.parameters[@"province"] = self.province;
+   http.parameters[@"city"] = self.city;
+   http.parameters[@"area"] = self.area;
+   http.parameters[@"address"] = self.detailAddressTf.text; //详细地址
     http.parameters[@"longitude"] = self.longitude; //经度
     http.parameters[@"latitude"] = self.latitude; //纬度
-    http.parameters[@"bookMobile"] = self.shopPhoneTf.text; //订购电话
-//    http.parameters[@"smsMobile"] = self.smsPhoneTf.text;  //短信电话
-    http.parameters[@"slogan"] = self.advTextView.text; //广告语
+    http.parameters[@"mobile"] = self.shopPhoneTf.text; //订购电话
     
-    http.parameters[@"pic"] = detailImgKeys; //店铺图片
-    http.parameters[@"description"] = self.shopDetailView.detailTextView.text; //描述
+    http.parameters[@"scale"] = self.scaleTf.text; //订购电话
+    http.parameters[@"name"] = self.shopNameTf.text;
+    //
+    http.parameters[@"pic"] = thumailImageKey;
+    http.parameters[@"advPic"] = detailImgKeys; //店铺图片
+    http.parameters[@"description"] = self.advTextView.text;
+    http.parameters[@"slogan"] = self.advTextView.text; //广告语
+    http.parameters[@"registeredCapital"] = self.capitalTf.text; //广告语
+    http.parameters[@"regtime"] = self.birthTf.text; //成立时间
     http.parameters[@"token"] = [ZHUser user].token;
-    http.parameters[@"owner"] = [ZHUser user].userId;
     
     //
     [http postWithSuccess:^(id responseObject) {
@@ -516,8 +532,8 @@
 
 
 
-#pragma mark- 封面图片选择事件
-- (void)selectImg {
+#pragma mark- 封面图片选择事件,封面图片选择编制改变
+- (void)selectImg:(id)sender {
 
     __weak typeof(self) weakself = self;
     _picker = [[TLImagePicker alloc] initWithVC:self];
@@ -525,10 +541,21 @@
         
         UIImage *image = info[@"UIImagePickerControllerOriginalImage"];
         NSData *imgData = UIImageJPEGRepresentation(image, ZIP_COEFFICIENT);
-        weakself.coverImageView.image = [UIImage imageWithData:imgData];
-        weakself.coverImgChanged = YES;
+        
+        if ([sender isEqual:weakself.thumailImageUpLoadView.uploadBtn]) {
+            //缩略图上传
+            weakself.thumailImageUpLoadView.imageView.image = [UIImage imageWithData:imgData];
+            weakself.thumbilImageChanged = YES;
+            
+        } else {
+            //封面图上传
+            weakself.coverImageView.image = [UIImage imageWithData:imgData];
+            weakself.coverImgChanged = YES;
+        }
+       
         
     };
+    
     [_picker picker];
 
 }
@@ -557,7 +584,7 @@
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 88)];
     headerView.backgroundColor = [UIColor whiteColor];
     //图片选择手势
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectImg)];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectImg:)];
     [headerView addGestureRecognizer:tap];
     
     UILabel *nameLbl = [UILabel labelWithFrame:CGRectMake(15, 5, 100, 25) textAligment:NSTextAlignmentLeft backgroundColor:[UIColor whiteColor] font:[UIFont secondFont] textColor:[UIColor zh_textColor]];
@@ -576,15 +603,15 @@
     [headerView addSubview:shopCoverImageView];
     self.coverImageView = shopCoverImageView;
     
-   //被拒绝原因
-   self.refuseLbl = [UILabel labelWithFrame:CGRectMake(20, nameLbl.yy + 2, 100, 20) textAligment:NSTextAlignmentLeft backgroundColor:[UIColor whiteColor] font:[UIFont thirdFont] textColor:[UIColor blackColor]];
-   [headerView addSubview:self.refuseLbl];
-    
-    [self.refuseLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(nameLbl.mas_left);
-        make.top.equalTo(nameLbl.mas_bottom).offset(5);
-        make.right.equalTo(self.coverImageView.mas_left);
-    }];
+//   //被拒绝原因
+//   self.refuseLbl = [UILabel labelWithFrame:CGRectMake(20, nameLbl.yy + 2, 100, 20) textAligment:NSTextAlignmentLeft backgroundColor:[UIColor whiteColor] font:[UIFont thirdFont] textColor:[UIColor blackColor]];
+//   [headerView addSubview:self.refuseLbl];
+//    
+//    [self.refuseLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.equalTo(nameLbl.mas_left);
+//        make.top.equalTo(nameLbl.mas_bottom).offset(5);
+//        make.right.equalTo(self.coverImageView.mas_left);
+//    }];
     
     
 
@@ -638,45 +665,6 @@
 
 }
 
-#pragma mark- dataSource
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    return 12;
-    
-}
-
-
-
-- (TLTextField *)smsMobileTf {
-    
-    if (!_smsMobileTf) {
-        
-        _smsMobileTf = [[TLTextField alloc] initWithFrame:CGRectMake(LEFT_WIDTH_SHOP, 0,SCREEN_WIDTH - LEFT_WIDTH_SHOP, 44)];
-        _smsMobileTf.placeholder = @"请输入短信电话";
-        _smsMobileTf.keyboardType = UIKeyboardTypePhonePad;
-        
-    }
-    
-    return _smsMobileTf;
-    
-}
-
-
-
-//店铺类型
-//店铺名称
-//省市区
-//详细地址
-//经纬度
-//联系电话
-//广告语
-//店铺详述
-
 #pragma mark- 店铺信息验证
 - (BOOL)valitInput {
     
@@ -685,29 +673,30 @@
         return NO;
     }
     
-//    if (![self.shopTypeTf.text valid] && self.shopType && self.shopType.length > 0) {
-//        [TLAlert alertWithHUDText:@"请选择店铺类型"];
-//        return NO;
-//    }
-    
     if (![self.shopPhoneTf.text valid]) {
-        [TLAlert alertWithHUDText:@"请填写店铺名称"];
+        [TLAlert alertWithHUDText:@"请填写公司名称"];
         return NO;
     }
     
     if (![self.shopAddressTf.text valid]) {
-        [TLAlert alertWithHUDText:@"请选择店铺地区"];
+        [TLAlert alertWithHUDText:@"请选择公司地区"];
         return NO;
     }
     
     if (![self.detailAddressTf.text valid]) {
-        [TLAlert alertWithHUDText:@"请输入店铺详细地址"];
+        [TLAlert alertWithHUDText:@"请输入公司详细地址"];
         return NO;
     }
     
+    
     //定位
     if(![self.longitude valid] || ![self.latitude valid]){
-        [TLAlert alertWithHUDText:@"请对店铺进行定位"];
+        [TLAlert alertWithHUDText:@"请对公司进行定位"];
+        return NO;
+    }
+    
+    if (!self.thumailImageUpLoadView.imageView.image) {
+        [TLAlert alertWithInfo:@"请上传缩略图"];
         return NO;
     }
     
@@ -717,26 +706,40 @@
         return NO;
     }
     
-    if (![self.smsMobileTf.text valid]) {
-        [TLAlert alertWithHUDText:@"请输入短信电话"];
+    //
+    if (![self.scaleTf.text valid]) {
+        [TLAlert alertWithHUDText:@"请输入规模"];
         return NO;
     }
     
+    if (![self.birthTf.text valid]) {
+        [TLAlert alertWithHUDText:@"请输入成立时间"];
+        return NO;
+    }
+    
+    if (![self.capitalTf.text valid]) {
+        [TLAlert alertWithHUDText:@"请输入注册资本"];
+        return NO;
+    }
+    
+    
+    //
     if (![self.advTextView.text valid]) {
         [TLAlert alertWithHUDText:@"请输入广告语"];
         return NO;
     }
     
     if (![self.shopDetailView.detailTextView.text valid]) {
-        [TLAlert alertWithHUDText:@"请填写店铺详细信息"];
+        [TLAlert alertWithHUDText:@"请填写公司详细信息"];
         return NO;
     }
     
     if (!self.shopDetailView.images.count) {
-        [TLAlert alertWithHUDText:@"请填选择店铺详情图片"];
+        [TLAlert alertWithHUDText:@"请填选择公司详情图片"];
         return NO;
     }
     return YES;
+    
 }
 
 @end

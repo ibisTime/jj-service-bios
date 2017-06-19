@@ -25,7 +25,7 @@
         
         QNConfiguration *configuration = [QNConfiguration build:^(QNConfigurationBuilder *builder) {
             
-//            builder.zone = [QNZone zone2];
+            builder.zone = [QNZone zone2];
             
         }];
         

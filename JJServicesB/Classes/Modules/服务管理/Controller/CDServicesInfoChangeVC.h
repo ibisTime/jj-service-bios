@@ -6,8 +6,8 @@
 //  Copyright © 2017年  tianlei. All rights reserved.
 //
 
-#import "TLBaseVC.h"
+#import "ServicesBaseVC.h"
 
-@interface CDServicesInfoChangeVC : TLBaseVC
+@interface CDServicesInfoChangeVC : ServicesBaseVC
 
 @end

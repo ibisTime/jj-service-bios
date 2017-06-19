@@ -9,18 +9,26 @@
 #import "CDServiceMgtVC.h"
 #import "TLPageDataHelper.h"
 #import "CDDefaultCell.h"
-#import "CDServicesInfoChangeVC.h"
+//#import "CDServicesInfoChangeVC.h"
+#import "CDServicesHelper.h"
+#import "CDServiceTypeChooseVC.h"
+#import "CDServiceBaseModel.h"
+#import "CDUIServicesVC.h"
+#import "ZHSegmentView.h"
+#import "CDServicesListVC.h"
 
 
-@interface CDServiceMgtVC ()<UITableViewDelegate, UITableViewDataSource>
+@interface CDServiceMgtVC ()<ZHSegmentViewDelegate>
 
 
-@property (nonatomic,strong) NSMutableArray *models; //商品
-@property (nonatomic,assign) BOOL isFirst;
+//@property (nonatomic,strong) NSMutableArray *models; //商品
+//@property (nonatomic,assign) BOOL isFirst;
+//
+////@property (nonatomic,strong) NSMutableArray <ZHGoodsModel *> *treasureModels; //商品
+//@property (nonatomic,strong) TLTableView *mineTableView; //商品
+//@property (nonatomic, strong) NSMutableArray <CDServiceBaseModel *> *models;
 
-
-//@property (nonatomic,strong) NSMutableArray <ZHGoodsModel *> *treasureModels; //商品
-@property (nonatomic,strong) TLTableView *mineTableView; //商品
+@property (nonatomic, strong) UIScrollView *switchScrollView;
 
 @end
 
@@ -30,124 +38,199 @@
     
     [super viewWillAppear:animated];
     
-    if (self.isFirst) {
-        
-        self.isFirst = NO;
-        [self.mineTableView beginRefreshing];
-        //        [self.treasureTableView beginRefreshing];
-        
-    }
+//    if (self.isFirst) {
+//        
+//        self.isFirst = NO;
+//        [self.mineTableView beginRefreshing];
+//        //        [self.treasureTableView beginRefreshing];
+//        
+//    }
     
 }
+
+- (BOOL)segmentSwitch:(NSInteger)idx {
+
+    [self.switchScrollView setContentOffset:CGPointMake(idx*SCREEN_WIDTH, 0)];
+    
+    return YES;
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.isFirst = YES;
-    self.models = [NSMutableArray array];
-    [self.models addObject:@2];
+//    self.isFirst = YES;
+//    self.models = [NSMutableArray array];
+    self.title = @"服务管理";
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"添加" style:0 target:self action:@selector(add)];
     
- 
-    //普通商品
-    TLTableView *goodsTableView = [TLTableView tableViewWithframe:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 64) delegate:self dataSource:self];
-    [self.view addSubview:goodsTableView];
-    goodsTableView.rowHeight = [CDDefaultCell rowHeight];
-    self.mineTableView = goodsTableView;
+    ZHSegmentView *segmentView = [[ZHSegmentView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 45)];
+    segmentView.delegate = self;
+    [self.view addSubview:segmentView];
+    segmentView.tagNames = @[@"摄影",@"培训",@"运营"];
+    segmentView.bootomLine.backgroundColor = [UIColor themeColor];
+    
+    //
+    UIScrollView *switchScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, segmentView.height, SCREEN_WIDTH, SCREEN_HEIGHT - 64 - segmentView.height)];
+    [self.view addSubview:switchScrollView];
+    switchScrollView.contentSize = CGSizeMake(3*SCREEN_WIDTH, SCREEN_HEIGHT - 64 - 45);
+    self.switchScrollView = switchScrollView;
+    switchScrollView.pagingEnabled = YES;
+    switchScrollView.scrollEnabled = NO;
+    
+    //摄影
+    CDServicesListVC *syVC = [[CDServicesListVC alloc] init];
+    syVC.type = ServicesTypeShoot;
+    syVC.view.frame = CGRectMake(0, 0, switchScrollView.width, switchScrollView.height);
+    [switchScrollView addSubview:syVC.view];
+    [self addChildViewController:syVC];
+    [syVC beginRefresh];
+    
+    //培训
+    CDServicesListVC *eduVC = [[CDServicesListVC alloc] init];
+    eduVC.type = ServicesTypeEdu;
+    eduVC.view.frame = CGRectMake(SCREEN_WIDTH, 0, switchScrollView.width, switchScrollView.height);
+    [switchScrollView addSubview:eduVC.view];
+    [self addChildViewController:eduVC];
+    [eduVC beginRefresh];
 
     
-    
-    
-    ///
-    __weak typeof(self) weakself = self;
-    TLPageDataHelper *goodsHelper = [[TLPageDataHelper alloc] init];
-    goodsHelper.code = @"808025";
-    goodsHelper.isAutoDeliverCompanyCode = NO;
-    goodsHelper.parameters[@"companyCode"] = [ZHUser user].userId;
-//    [goodsHelper modelClass:[ZHGoodsModel class]];
-    goodsHelper.tableView = self.mineTableView;
-    
-    self.mineTableView.placeHolderView = [TLPlaceholderView placeholderViewWithText:@"暂无记录"];
-    
-    [self.mineTableView addRefreshAction:^{
-        
-        [goodsHelper refresh:^(NSMutableArray *objs, BOOL stillHave) {
-            
+    //运营
+    CDServicesListVC *operationVC = [[CDServicesListVC alloc] init];
+    operationVC.type = ServicesTypeOperation;
+    operationVC.view.frame = CGRectMake(2*SCREEN_WIDTH, 0, switchScrollView.width, switchScrollView.height);
+    [switchScrollView addSubview:operationVC.view];
+    [self addChildViewController:operationVC];
+    [operationVC beginRefresh];
+
+  
+    //
+//    //普通商品
+//    TLTableView *goodsTableView = [TLTableView tableViewWithframe:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 64) delegate:self dataSource:self];
+//    [self.view addSubview:goodsTableView];
+//    goodsTableView.rowHeight = [CDDefaultCell rowHeight];
+//    self.mineTableView = goodsTableView;
+//
+//    //
+//    __weak typeof(self) weakself = self;
+//    TLPageDataHelper *goodsHelper = [[TLPageDataHelper alloc] init];
+//    goodsHelper.code = @"612140";
+////    goodsHelper.isAutoDeliverCompanyCode = NO;
+////    goodsHelper.parameters[@"companyCode"] = [ZHUser user].userId;
+//    [goodsHelper modelClass:[CDServiceBaseModel class]];
+//    goodsHelper.tableView = self.mineTableView;
+//    self.mineTableView.placeHolderView = [TLPlaceholderView placeholderViewWithText:@"暂无记录"];
+//    
+//    [self.mineTableView addRefreshAction:^{
+//        
+//        [goodsHelper refresh:^(NSMutableArray *objs, BOOL stillHave) {
+//            
 //            weakself.models = objs;
 //            [weakself.mineTableView reloadData_tl];
-            
-            
-        } failure:^(NSError *error) {
-            
-            
-        }];
-        
-    }];
-    
-    
-    [self.mineTableView addLoadMoreAction:^{
-        
-        [goodsHelper loadMore:^(NSMutableArray *objs, BOOL stillHave) {
-            
+//            
+//            
+//        } failure:^(NSError *error) {
+//            
+//            
+//        }];
+//        
+//    }];
+//    
+//    
+//    [self.mineTableView addLoadMoreAction:^{
+//        
+//        [goodsHelper loadMore:^(NSMutableArray *objs, BOOL stillHave) {
+//            
 //            weakself.models = objs;
 //            [weakself.mineTableView reloadData_tl];
-            
-            
-        } failure:^(NSError *error) {
-            
-            
-        }];
-    }];
+//            
+//            
+//        } failure:^(NSError *error) {
+//            
+//            
+//        }];
+//    }];
     
     
 }
 
+#pragma mark- 添加服务
+- (void)add {
 
-- (nullable NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    UITableViewRowAction *rowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"删除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
-        
-        [self.models removeObjectAtIndex:indexPath.row];
-        [(TLTableView *)tableView reloadData_tl];
-        
-    }];
-
-    return @[rowAction];
-
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    CDServicesInfoChangeVC *vc = [[CDServicesInfoChangeVC alloc] init];
+    CDServiceTypeChooseVC *vc = [CDServiceTypeChooseVC new];
     [self.navigationController pushViewController:vc animated:YES];
-    
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
-}
-
-#pragma mark- dataSource
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-
-    return self.models.count;
-    
-}
 
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    CDDefaultCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ZHGoodsCellId"];
-    if (!cell) {
         
-        cell = [[CDDefaultCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ZHGoodsCellId"];
-    }
-    
-    cell.imageView.backgroundColor = [UIColor orangeColor];
-    cell.mainTextLbl.text = @"主要";
-    cell.subTextLbl.text = @"次要";
-    cell.timeLbl.text = @"2019-23-32";
-    cell.stateLbl.text = @"状态";
+//    CDServicesInfoChangeVC *vc = [[CDServicesInfoChangeVC alloc] init];
+//    [self.navigationController pushViewController:vc animated:YES];
 
-    return cell;
-    
 }
+
+//- (nullable NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
+//
+//    UITableViewRowAction *rowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"删除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+//        
+//        TLNetworking *http = [TLNetworking new];
+//        http.showView = self.view;
+//        http.code = @"612130";
+//        http.parameters[@"code"] = @"";
+//        [http postWithSuccess:^(id responseObject) {
+//            
+//            [self.models removeObjectAtIndex:indexPath.row];
+//            [(TLTableView *)tableView reloadData_tl];
+//            
+//        } failure:^(NSError *error) {
+//            
+//        }];
+//
+//
+//        
+//    }];
+//
+//    return @[rowAction];
+//
+//}
+//
+//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+//    
+//    
+//    CDUIServicesVC *vc = [CDUIServicesVC new];
+//    vc.servicesBaseModel = self.models[indexPath.row];
+//    
+////     *vc = [[CDServiceTypeChooseVC alloc] init];
+//    [self.navigationController pushViewController:vc animated:YES];
+//
+//    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+//    
+//}
+//
+//#pragma mark- dataSource
+//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+//
+//    return self.models.count;
+//    
+//}
+//
+//
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    
+//    CDDefaultCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ZHGoodsCellId"];
+//    if (!cell) {
+//        
+//        cell = [[CDDefaultCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ZHGoodsCellId"];
+//    }
+//    
+//    cell.imageView.backgroundColor = [UIColor orangeColor];
+//    
+//    CDServiceBaseModel *model = self.models[indexPath.row];
+//    
+//    cell.mainTextLbl.text = model.name;
+//    cell.subTextLbl.text = [NSString stringWithFormat:@"%@",model.quoteMax];
+//    cell.stateLbl.text = @"状态";
+//    
+//    return cell;
+//    
+//}
 
 @end

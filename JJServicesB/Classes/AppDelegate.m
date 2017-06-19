@@ -34,6 +34,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+//      意向状态：APPLY("1", "未查看"), PASS_YES("2", "已查看/处理通过"), PASS_NO("3", "不通过");
+//    tgfw(必填)	提供服务	A 运营 B 推广 C 拍摄 D 美工 E 客服 F 仓储 G 打包发货
+    
+    
     //
     //配置环境
     [AppConfig config].runEnv = RunEnvDev;

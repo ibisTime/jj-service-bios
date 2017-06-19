@@ -63,7 +63,17 @@
 - (void)viewWillAppear:(BOOL)animated {
 
     [super viewWillAppear:animated];
+    
+    if ([CDCompany company].aptitudeType == AptitudeTypePass) {
+        
+        [self hiddenNavBar];
+
+        return;
+    }
+    
+    //
     if (!self.isFirst) {
+        
         [self hiddenNavBar];
         
     } else {
@@ -282,7 +292,7 @@
 - (void)addNotification {
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userInfoChange) name:kUserInfoChange object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(shopInfoChange) name:kUserInfoChange object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(shopInfoChange) name:kUserInfoChange object:nil];
     //未读消息
 
 }
