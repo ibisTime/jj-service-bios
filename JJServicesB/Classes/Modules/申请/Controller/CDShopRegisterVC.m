@@ -121,9 +121,7 @@
         return;
     }
     
-    [self applyWithImgKey:@"ios——test"];
 
-    return;
     TLNetworking *getUploadToken = [TLNetworking new];
     getUploadToken.showView = self.view;
     getUploadToken.code = @"807900";
@@ -173,7 +171,7 @@
     http.parameters[@"pwdStrength"] = @"1";
     http.parameters[@"name"] = self.shopNameTf.text;
     http.parameters[@"corporation"] = self.realNameTf.text;
-    //    (1 公司 2个体户)
+    //    (1 店铺 2个体户)
     if (self.type == RegisterTypePersonal) {
         
         http.parameters[@"type"] = @"2";
@@ -219,7 +217,7 @@
             
         }];
         
-        //获取公司信息
+        //获取店铺信息
         [[CDCompany company] getShopInfoSuccess:^(NSDictionary *shopDict) {
             
             
@@ -266,7 +264,7 @@
     } else if (self.type == RegisterTypeEnterprise) {
 
         nameStr = @"企业名称";
-        cardStr = @"营业执照号";
+        cardStr = @"营业执照";
         
     }
     

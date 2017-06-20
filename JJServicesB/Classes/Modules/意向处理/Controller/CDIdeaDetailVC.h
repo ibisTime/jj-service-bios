@@ -7,7 +7,12 @@
 //
 
 #import "TLBaseVC.h"
+#import "CDIdeaModel.h"
 
 @interface CDIdeaDetailVC : TLBaseVC
+
+@property (nonatomic, strong) CDIdeaModel *model;
+
+@property (nonatomic, copy) void(^success)();
 
 @end

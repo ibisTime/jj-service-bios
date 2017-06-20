@@ -9,6 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "CDCompanyAptitudeModel.h"
 
+#define SHOOT_APTITUDE_KEY @"2"
+#define EDU_APTITUDE_KEY @"1"
+#define OPERATION_APTITUDE_KEY @"4"
+
+
 typedef NS_ENUM(NSUInteger, AptitudeType) {
 
     AptitudeTypeUnApply,
@@ -25,8 +30,6 @@ typedef NS_ENUM(NSUInteger, AptitudeType) {
 @property (nonatomic, copy) NSString *idNo;
 
 @property (nonatomic, copy) NSString *remark;
-
-
 @property (nonatomic, copy) NSString *location;
 @property (nonatomic, copy) NSString *mobile;
 @property (nonatomic, copy) NSString *name;
@@ -34,11 +37,9 @@ typedef NS_ENUM(NSUInteger, AptitudeType) {
 //
 @property (nonatomic, copy) NSString *status;
 @property (nonatomic, copy) NSString *address;
-
 @property (nonatomic, copy) NSString *area;
 @property (nonatomic, copy) NSString *city;
 @property (nonatomic, copy) NSString *province;
-
 
 //图片
 @property (nonatomic, copy) NSString *logo;
@@ -46,14 +47,10 @@ typedef NS_ENUM(NSUInteger, AptitudeType) {
 @property (nonatomic, copy) NSString *advPic; //多张
 
 @property (nonatomic, copy, readonly) NSArray <NSString *>*detailPics;
-
-
 /**
  广告语
  */
 @property (nonatomic, copy) NSString *slogan;
-
-
 //规模
 @property (nonatomic, copy) NSString *scale;
 
@@ -65,7 +62,7 @@ typedef NS_ENUM(NSUInteger, AptitudeType) {
 @property (nonatomic, copy) NSString *desc;
 
 
-//(1 公司 2个体户)
+//(1 店铺 2个体户)
 @property (nonatomic, copy) NSString *type;
 
 @property (nonatomic, copy) NSString *updateDatetime;
@@ -78,11 +75,15 @@ typedef NS_ENUM(NSUInteger, AptitudeType) {
 
 @property (nonatomic, assign, readonly) AptitudeType aptitudeType;
 
+@property (nonatomic, copy) NSArray <CDCompanyAptitudeModel *>*aptitudeModles;
+
+- (void)loginOut;
 
 + (instancetype)company;
 
 - (void)getShopInfoSuccess:(void(^)(NSDictionary *shopDict))success failure:(void(^)(NSError *error))failure;
 
+- (void)getAptitudeModelsSuccess:(void(^)())success failure:(void(^)())failure;
 
 //address = "\U9690\U9690\U7ea6\U7ea6";
 //advPic = "IOS_1497840833637814_1536_2048.jpg";

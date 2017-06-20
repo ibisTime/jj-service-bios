@@ -197,8 +197,16 @@
     [loginBtn addTarget:self action:@selector(goLogin) forControlEvents:UIControlEventTouchUpInside];
 
     
+    UILabel *hintLbl = [UILabel labelWithFrame:CGRectMake(0, loginBtn.yy + 25, SCREEN_WIDTH, 40)
+                                  textAligment:NSTextAlignmentCenter
+                               backgroundColor:[UIColor clearColor]
+                                          font:FONT(14)
+                                     textColor:[UIColor whiteColor]];
+    [self.bgSV addSubview:hintLbl];
+    hintLbl.text = @"没有账号？";
+    
     //注册
-    UIButton *regBtn = [UIButton borderBtnWithFrame:CGRectMake(margin,loginBtn.yy + 30, w, h) title:@"注册" borderColor:[UIColor whiteColor]];
+    UIButton *regBtn = [UIButton borderBtnWithFrame:CGRectMake(margin,hintLbl.yy + 10, w, h) title:@"申请入驻" borderColor:[UIColor whiteColor]];
     [regBtn addTarget:self action:@selector(goReg) forControlEvents:UIControlEventTouchUpInside];
     [bgSV addSubview:regBtn];
 

@@ -18,6 +18,8 @@
 #import "TLUploadManager.h"
 #import "SDWebImageManager.h"
 #import "ZHAboutUsVC.h"
+#import "ZHChangeMobileVC.h"
+#import "ZHPwdRelatedVC.h"
 
 @interface ZHMineSetVC ()<UITableViewDelegate,UITableViewDataSource,UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 
@@ -25,7 +27,7 @@
 
 @property (nonatomic,strong) UIImageView *portraitImageView;//头像
 @property (nonatomic,strong) UILabel *phoneLbl;
-@property (nonatomic,strong) UILabel *contractLbl;
+//@property (nonatomic,strong) UILabel *contractLbl;
 @property (nonatomic,copy) NSString *cacheStr;
 
 @property (nonatomic,strong) UITableView *tableV;
@@ -41,6 +43,9 @@
     [super viewDidLoad];
     self.title = @"个人设置";
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    
+    
+    self.phoneLbl.text = [ZHUser user].mobile;
     
     //
     NSUInteger size = [[SDImageCache sharedImageCache] getSize];
@@ -96,38 +101,121 @@
 //        [self.portraitImageView sd_setImageWithURL:[NSURL URLWithString:[photo convertThumbnailImageUrl]] placeholderImage:[UIImage imageNamed:@"头像占位图"]];
 //    }
 //    
-//    self.phoneLbl.text = [ZHUser user].mobile;
+    self.phoneLbl.text = [ZHUser user].mobile;
 
 
 }
 
 - (ZHSetGroup *)setGroup00 {
 
-    ZHSetGroup *group = [[ZHSetGroup alloc] init];
+    
     
     __weak typeof(self) weakSelf = self;
-    //银行卡
-    ZHSetItem *cardItem = [[ZHSetItem alloc] init];
-    cardItem.title = @"我的银行卡";
-    cardItem.type = ZHSetItemAccessoryTypeArrow;
-    cardItem.action = ^(){
+    ZHSetGroup *group = [[ZHSetGroup alloc] init];
     
-//        ZHBankCardListVC *bankVC = [[ZHBankCardListVC alloc] init];
-//        [weakSelf.navigationController pushViewController:bankVC animated:YES];
-    };
-    
-    //账户安全
-    ZHSetItem *securityItem = [[ZHSetItem alloc] init];
-    securityItem.title = @"账户安全";
-    securityItem.type = ZHSetItemAccessoryTypeArrow;
-    securityItem.action = ^(){
+    ZHSetItem *item00 = [[ZHSetItem alloc] init];
+    item00.title = @"修改手机号";
+    item00.action = ^(){
         
-     [weakSelf.navigationController pushViewController:[[ZHAccountAboutVC alloc] init] animated:YES];
+        ZHChangeMobileVC *vc = [[ZHChangeMobileVC alloc] init];
+        [weakSelf.navigationController pushViewController:vc animated:YES];
+        
+        [vc setChangeMobileSuccess:^(NSString *mobile){
+            
+            weakSelf.phoneLbl.text = mobile;
+            [[ZHUser user] updateUserInfo];
+            
+        }];
         
     };
+   
+    //
+    ZHSetItem *item01 = [[ZHSetItem alloc] init];
+    item01.title = @"修改登录密码";
+    item01.action = ^(){
+        
+        ZHPwdRelatedVC *vc = [[ZHPwdRelatedVC alloc] initWith:ZHPwdTypeReset];
+        [weakSelf.navigationController pushViewController:vc animated:YES];
+        
+    };
     
-    group.setItems = @[cardItem,securityItem];
+    ZHSetItem *item02 = [[ZHSetItem alloc] init];
+    item02.title = @"修改支付密码";
+    item02.action = ^(){
+        
+        ZHPwdRelatedVC *vc = [[ZHPwdRelatedVC alloc] initWith:ZHPwdTypeTradeReset];
+        [weakSelf.navigationController pushViewController:vc animated:YES];
+        
+    };
+    
+    
+    group.setItems = @[item00,item01,item02];
     return group;
+    
+//    __weak typeof(self) weakSelf = self;
+//    //银行卡
+//    ZHSetItem *cardItem = [[ZHSetItem alloc] init];
+//    cardItem.title = @"我的银行卡";
+//    cardItem.type = ZHSetItemAccessoryTypeArrow;
+//    cardItem.action = ^(){
+//    
+////        ZHBankCardListVC *bankVC = [[ZHBankCardListVC alloc] init];
+////        [weakSelf.navigationController pushViewController:bankVC animated:YES];
+//    };
+//    
+//    //账户安全
+//    ZHSetItem *securityItem = [[ZHSetItem alloc] init];
+//    securityItem.title = @"账户安全";
+//    securityItem.type = ZHSetItemAccessoryTypeArrow;
+//    securityItem.action = ^(){
+//        
+//     [weakSelf.navigationController pushViewController:[[ZHAccountAboutVC alloc] init] animated:YES];
+//        
+//    };
+//    
+//    ZHSetItem *newMsgNotificationItem = [[ZHSetItem alloc] init];
+//    newMsgNotificationItem.title = @"新消息通知";
+//    newMsgNotificationItem.type = ZHSetItemAccessoryTypeSwitch;
+//    newMsgNotificationItem.action = ^(){
+//        
+//        NSLog(@"查看银行卡");
+//        
+//    };
+//    
+//    //
+//    ZHSetItem *cleanItem = [[ZHSetItem alloc] init];
+//    cleanItem.title = @"清理缓存";
+//    cleanItem.type = ZHSetItemAccessoryTypeLabel;
+//    cleanItem.action = ^(){
+//        
+//        //        [TLAlert alertWithTitle:nil Message:@"清理缓存" confirmMsg:@"清理" CancleMsg:@"取消" cancle:^(UIAlertAction *action) {
+//        //
+//        //        } confirm:^(UIAlertAction *action) {
+//        //
+//        //            weakSelf.cacheStr = @"0B";
+//        //            [weakSelf.tableV reloadData];
+//        //
+//        //            [[SDImageCache sharedImageCache] clearDisk];
+//        //
+//        //        }];
+//        
+//        
+//        
+//    };
+//    
+//    //账户安全
+//    ZHSetItem *securityItem = [[ZHSetItem alloc] init];
+//    securityItem.title = @"关于我们";
+//    securityItem.type = ZHSetItemAccessoryTypeArrow;
+//    securityItem.action = ^(){
+//        
+//        ZHAboutUsVC *aboutUsVC = [[ZHAboutUsVC alloc] init];
+//        [self.navigationController pushViewController:aboutUsVC animated:YES];
+//        
+//    };
+
+    
+
 
 }
 
@@ -178,7 +266,7 @@
         
     };
     
-    group.setItems = @[newMsgNotificationItem,cleanItem,securityItem];
+    group.setItems = @[securityItem];
     return group;
     
 }
@@ -207,7 +295,11 @@
     
     if(indexPath.section == 0) {
         
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+
+        return;
         __weak typeof(self) weakself = self;
+
         imagePicker = [[TLImagePicker alloc] initWithVC:self];
         imagePicker.allowsEditing = YES;
         imagePicker.pickFinish = ^(NSDictionary *info){
@@ -298,20 +390,20 @@
 
 }
 
-- (UILabel *)contractLbl {
-
-    if (!_contractLbl) {
-        
-        
-       _contractLbl = [UILabel labelWithFrame:CGRectMake(self.phoneLbl.x, self.phoneLbl.yy, self.phoneLbl.width, 25)
-                                      textAligment:NSTextAlignmentLeft
-                                   backgroundColor:[UIColor whiteColor]
-                                              font:[UIFont systemFontOfSize:13]
-                                         textColor:[UIColor colorWithHexString:@"#999999"]];
-    }
-    return _contractLbl;
-
-}
+//- (UILabel *)contractLbl {
+//
+//    if (!_contractLbl) {
+//        
+//        
+//       _contractLbl = [UILabel labelWithFrame:CGRectMake(self.phoneLbl.x, self.phoneLbl.yy, self.phoneLbl.width, 25)
+//                                      textAligment:NSTextAlignmentLeft
+//                                   backgroundColor:[UIColor whiteColor]
+//                                              font:[UIFont systemFontOfSize:13]
+//                                         textColor:[UIColor colorWithHexString:@"#999999"]];
+//    }
+//    return _contractLbl;
+//
+//}
 #pragma mark-- dataSource
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -321,8 +413,12 @@
         [cell addSubview:self.portraitImageView];
         
         [cell addSubview:self.phoneLbl];
+        [self.phoneLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.portraitImageView.mas_right).offset(15);
+            make.centerY.equalTo(self.portraitImageView.mas_centerY);
+        }];
 
-        [cell addSubview:self.contractLbl];
+//        [cell addSubview:self.contractLbl];
         
         return cell;
     }

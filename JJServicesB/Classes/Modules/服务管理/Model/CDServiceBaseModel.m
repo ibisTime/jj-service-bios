@@ -10,6 +10,16 @@
 
 @implementation CDServiceBaseModel
 
+
+- (NSString *)getStatusName {
+
+    NSDictionary *dict = @{
+                           @"1" : @"正常" ,
+                           @"0"  : @"违规"
+                           };
+    return dict[self.status];
+    
+}
 + (NSDictionary *)tl_replacedKeyFromPropertyName {
 
     return @{@"desc": @"description"};

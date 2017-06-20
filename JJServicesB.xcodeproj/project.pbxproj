@@ -113,6 +113,9 @@
 		2EF823CB1EF7DDB00017EDC1 /* EduServicesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF823CA1EF7DDB00017EDC1 /* EduServicesVC.m */; };
 		2EF823CE1EF807480017EDC1 /* CDEduServicesModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF823CD1EF807480017EDC1 /* CDEduServicesModel.m */; };
 		2EF823D41EF80B670017EDC1 /* OperationServicesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF823D31EF80B670017EDC1 /* OperationServicesVC.m */; };
+		2EF823D71EF8AEC00017EDC1 /* CDOperationServicesModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF823D61EF8AEC00017EDC1 /* CDOperationServicesModel.m */; };
+		2EF823DA1EF8BFEE0017EDC1 /* CDIdeaModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF823D91EF8BFEE0017EDC1 /* CDIdeaModel.m */; };
+		2EF823DC1EF8FD520017EDC1 /* Address.json in Resources */ = {isa = PBXBuildFile; fileRef = 2EF823DB1EF8FD520017EDC1 /* Address.json */; };
 		CE0C08DD7F8FDC7A190903F1 /* libPods-JJServicesB.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 71DC402CB487994B745C240D /* libPods-JJServicesB.a */; };
 /* End PBXBuildFile section */
 
@@ -328,6 +331,11 @@
 		2EF823CD1EF807480017EDC1 /* CDEduServicesModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDEduServicesModel.m; sourceTree = "<group>"; };
 		2EF823D21EF80B670017EDC1 /* OperationServicesVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OperationServicesVC.h; sourceTree = "<group>"; };
 		2EF823D31EF80B670017EDC1 /* OperationServicesVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OperationServicesVC.m; sourceTree = "<group>"; };
+		2EF823D51EF8AEC00017EDC1 /* CDOperationServicesModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDOperationServicesModel.h; sourceTree = "<group>"; };
+		2EF823D61EF8AEC00017EDC1 /* CDOperationServicesModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDOperationServicesModel.m; sourceTree = "<group>"; };
+		2EF823D81EF8BFEE0017EDC1 /* CDIdeaModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDIdeaModel.h; sourceTree = "<group>"; };
+		2EF823D91EF8BFEE0017EDC1 /* CDIdeaModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDIdeaModel.m; sourceTree = "<group>"; };
+		2EF823DB1EF8FD520017EDC1 /* Address.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Address.json; sourceTree = "<group>"; };
 		71DC402CB487994B745C240D /* libPods-JJServicesB.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JJServicesB.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		89631A6FB9C1951A880F4F4A /* Pods-JJServicesB.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JJServicesB.release.xcconfig"; path = "Pods/Target Support Files/Pods-JJServicesB/Pods-JJServicesB.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -661,6 +669,7 @@
 		2EAEAF451EF232520005EC88 /* AddressPickerView */ = {
 			isa = PBXGroup;
 			children = (
+				2EF823DB1EF8FD520017EDC1 /* Address.json */,
 				2EAEAF461EF232520005EC88 /* address.txt */,
 				2EAEAF471EF232520005EC88 /* AddressPickerView.h */,
 				2EAEAF481EF232520005EC88 /* AddressPickerView.m */,
@@ -938,6 +947,8 @@
 		2EAEAFE41EF673330005EC88 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				2EF823D81EF8BFEE0017EDC1 /* CDIdeaModel.h */,
+				2EF823D91EF8BFEE0017EDC1 /* CDIdeaModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -996,6 +1007,8 @@
 				2EF823C71EF7CC090017EDC1 /* CDShootServicesModel.m */,
 				2EF823CC1EF807480017EDC1 /* CDEduServicesModel.h */,
 				2EF823CD1EF807480017EDC1 /* CDEduServicesModel.m */,
+				2EF823D51EF8AEC00017EDC1 /* CDOperationServicesModel.h */,
+				2EF823D61EF8AEC00017EDC1 /* CDOperationServicesModel.m */,
 				2EF823B71EF7B1210017EDC1 /* CDUIServicesModel.h */,
 				2EF823B81EF7B1210017EDC1 /* CDUIServicesModel.m */,
 				2EF823C01EF7BF9B0017EDC1 /* TypeModel.h */,
@@ -1147,6 +1160,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2EF823DC1EF8FD520017EDC1 /* Address.json in Resources */,
 				2EAEAEB31EF2304C0005EC88 /* LaunchScreen.storyboard in Resources */,
 				2EAEAEB01EF2304C0005EC88 /* Assets.xcassets in Resources */,
 				2EAEAEAE1EF2304C0005EC88 /* Main.storyboard in Resources */,
@@ -1258,6 +1272,7 @@
 				2EAEAF2C1EF230F10005EC88 /* TLBannerView.m in Sources */,
 				2EAEAF871EF2326C0005EC88 /* ZHAccountTf.m in Sources */,
 				2EAEAFF91EF679120005EC88 /* CDImageUploadHeaderView.m in Sources */,
+				2EF823D71EF8AEC00017EDC1 /* CDOperationServicesModel.m in Sources */,
 				2EF823BC1EF7B99B0017EDC1 /* ShootServicesVC.m in Sources */,
 				2EAEAF681EF232520005EC88 /* ZHGoodsDetailEditView.m in Sources */,
 				2EAEB00B1EF67E190005EC88 /* ZHMsgContent.m in Sources */,
@@ -1291,6 +1306,7 @@
 				2EAEAFBF1EF25A330005EC88 /* CDShopRegisterVC.m in Sources */,
 				2EAEAF211EF230F10005EC88 /* UIFont+UI.m in Sources */,
 				2EAEAF371EF230F10005EC88 /* TLTimeButton.m in Sources */,
+				2EF823DA1EF8BFEE0017EDC1 /* CDIdeaModel.m in Sources */,
 				2EAEAF621EF232520005EC88 /* City.m in Sources */,
 				2EAEAFA51EF234C70005EC88 /* ZHAccountSetBaseVC.m in Sources */,
 				2EAEAF351EF230F10005EC88 /* TLTextField.m in Sources */,

@@ -22,7 +22,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"系统消息";
+    self.title = @"系统公告";
     TLTableView *msgTableView = [TLTableView tableViewWithframe:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 64)
                                                        delegate:self
                                                      dataSource:self];
@@ -37,16 +37,18 @@
     TLPageDataHelper *pageDataHelper = [[TLPageDataHelper alloc] init];
     pageDataHelper.code = @"804040";
     pageDataHelper.tableView = msgTableView;
-    pageDataHelper.parameters[@"token"] = [ZHUser user].token;
+//    pageDataHelper.parameters[@"token"] = [ZHUser user].token;
     pageDataHelper.parameters[@"channelType"] = @"4";
     
-    pageDataHelper.parameters[@"pushType"] = @"41";
+//    pageDataHelper.parameters[@"pushType"] = @"41";
     pageDataHelper.parameters[@"toKind"] = @"2";
 //    1 立即发 2 定时发
-    pageDataHelper.parameters[@"smsType"] = @"1";
+//    pageDataHelper.parameters[@"smsType"] = @"1";
+    
     pageDataHelper.parameters[@"status"] = @"1";
 
-    pageDataHelper.parameters[@"fromSystemCode"] = @"CD-CZH000001";
+    pageDataHelper.parameters[@"fromSystemCode"] = @"CD-CJJ000010";
+    pageDataHelper.parameters[@"toSystemCode"] = @"CD-CJJ000010";
     
     
     //0 未读 1 已读 2未读被删 3 已读被删

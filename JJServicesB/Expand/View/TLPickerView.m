@@ -20,8 +20,7 @@
 + (instancetype)pickerView {
 
     TLPickerView *pickerView = [[TLPickerView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    [pickerView addTarget:self action:@selector(remove
-                                                ) forControlEvents:UIControlEventTouchUpInside];
+
     
  
     //
@@ -39,6 +38,9 @@
     if (self) {
         
         self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
+        
+        [self addTarget:self action:@selector(remove
+                                                    ) forControlEvents:UIControlEventTouchUpInside];
         
         //
         UIPickerView *picker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 180)];

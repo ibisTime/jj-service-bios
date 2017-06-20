@@ -16,6 +16,11 @@
 #import "CDUIServicesVC.h"
 #import "ZHSegmentView.h"
 #import "CDServicesListVC.h"
+#import "ZHNavigationController.h"
+
+#import "ShootServicesVC.h"
+#import "EduServicesVC.h"
+#import "OperationServicesVC.h"
 
 
 @interface CDServiceMgtVC ()<ZHSegmentViewDelegate>
@@ -29,6 +34,7 @@
 //@property (nonatomic, strong) NSMutableArray <CDServiceBaseModel *> *models;
 
 @property (nonatomic, strong) UIScrollView *switchScrollView;
+@property (nonatomic, strong) CDServicesListVC *listVC;
 
 @end
 
@@ -64,44 +70,64 @@
     self.title = @"服务管理";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"添加" style:0 target:self action:@selector(add)];
     
-    ZHSegmentView *segmentView = [[ZHSegmentView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 45)];
-    segmentView.delegate = self;
-    [self.view addSubview:segmentView];
-    segmentView.tagNames = @[@"摄影",@"培训",@"运营"];
-    segmentView.bootomLine.backgroundColor = [UIColor themeColor];
+//    ZHSegmentView *segmentView = [[ZHSegmentView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 45)];
+//    segmentView.delegate = self;
+//    [self.view addSubview:segmentView];
+//    segmentView.tagNames = @[@"摄影",@"培训",@"运营"];
+//    segmentView.bootomLine.backgroundColor = [UIColor themeColor];
     
     //
-    UIScrollView *switchScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, segmentView.height, SCREEN_WIDTH, SCREEN_HEIGHT - 64 - segmentView.height)];
-    [self.view addSubview:switchScrollView];
-    switchScrollView.contentSize = CGSizeMake(3*SCREEN_WIDTH, SCREEN_HEIGHT - 64 - 45);
-    self.switchScrollView = switchScrollView;
-    switchScrollView.pagingEnabled = YES;
-    switchScrollView.scrollEnabled = NO;
+//    UIScrollView *switchScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, segmentView.height, SCREEN_WIDTH, SCREEN_HEIGHT - 64 - segmentView.height)];
+//    [self.view addSubview:switchScrollView];
+//    switchScrollView.contentSize = CGSizeMake(3*SCREEN_WIDTH, SCREEN_HEIGHT - 64 - 45);
+//    self.switchScrollView = switchScrollView;
+//    switchScrollView.pagingEnabled = YES;
+//    switchScrollView.scrollEnabled = NO;
     
-    //摄影
-    CDServicesListVC *syVC = [[CDServicesListVC alloc] init];
-    syVC.type = ServicesTypeShoot;
-    syVC.view.frame = CGRectMake(0, 0, switchScrollView.width, switchScrollView.height);
-    [switchScrollView addSubview:syVC.view];
-    [self addChildViewController:syVC];
-    [syVC beginRefresh];
     
-    //培训
-    CDServicesListVC *eduVC = [[CDServicesListVC alloc] init];
-    eduVC.type = ServicesTypeEdu;
-    eduVC.view.frame = CGRectMake(SCREEN_WIDTH, 0, switchScrollView.width, switchScrollView.height);
-    [switchScrollView addSubview:eduVC.view];
-    [self addChildViewController:eduVC];
-    [eduVC beginRefresh];
+    if ([[CDCompany company].gsQualify.qualifyCode isEqualToString:SHOOT_APTITUDE_KEY]) {
+        
+        //摄影
+        CDServicesListVC *syVC = [[CDServicesListVC alloc] init];
+        syVC.type = ServicesTypeShoot;
+        syVC.view.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 64);
+        [self.view addSubview:syVC.view];
+        [self addChildViewController:syVC];
+        [syVC beginRefresh];
+        self.listVC = syVC;
+        
+    } else if ([[CDCompany company].gsQualify.qualifyCode isEqualToString:EDU_APTITUDE_KEY]) {
+    
+      
+        //培训
+        CDServicesListVC *eduVC = [[CDServicesListVC alloc] init];
+        eduVC.type = ServicesTypeEdu;
+        eduVC.view.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 64);
+        [self.view addSubview:eduVC.view];
+        [self addChildViewController:eduVC];
+        [eduVC beginRefresh];
+        self.listVC = eduVC;
 
     
-    //运营
-    CDServicesListVC *operationVC = [[CDServicesListVC alloc] init];
-    operationVC.type = ServicesTypeOperation;
-    operationVC.view.frame = CGRectMake(2*SCREEN_WIDTH, 0, switchScrollView.width, switchScrollView.height);
-    [switchScrollView addSubview:operationVC.view];
-    [self addChildViewController:operationVC];
-    [operationVC beginRefresh];
+    
+    } else if ([[CDCompany company].gsQualify.qualifyCode isEqualToString:OPERATION_APTITUDE_KEY]) {
+    
+        //运营
+        CDServicesListVC *operationVC = [[CDServicesListVC alloc] init];
+        operationVC.type = ServicesTypeOperation;
+        operationVC.view.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 64);
+        [self.view addSubview:operationVC.view];
+        [self addChildViewController:operationVC];
+        [operationVC beginRefresh];
+        self.listVC = operationVC;
+
+    }
+  
+    
+
+
+    
+
 
   
     //
@@ -157,13 +183,64 @@
 #pragma mark- 添加服务
 - (void)add {
 
-    CDServiceTypeChooseVC *vc = [CDServiceTypeChooseVC new];
-    [self.navigationController pushViewController:vc animated:YES];
-
-
+    if ([[CDCompany company].gsQualify.qualifyCode isEqualToString:SHOOT_APTITUDE_KEY]) {
         
-//    CDServicesInfoChangeVC *vc = [[CDServicesInfoChangeVC alloc] init];
-//    [self.navigationController pushViewController:vc animated:YES];
+        ShootServicesVC *vc = [ShootServicesVC new];
+        [self.navigationController pushViewController:vc animated:YES];
+        [vc setSuccess:^{
+            [self.listVC beginRefresh];
+        }];
+        
+        
+    } else if ([[CDCompany company].gsQualify.qualifyCode isEqualToString:EDU_APTITUDE_KEY]) {
+        
+        
+        EduServicesVC *vc = [EduServicesVC new];
+        [self.navigationController pushViewController:vc animated:YES];
+        [vc setSuccess:^{
+            [self.listVC beginRefresh];
+        }];
+        
+        
+    } else if ([[CDCompany company].gsQualify.qualifyCode isEqualToString:OPERATION_APTITUDE_KEY]) {
+        
+    
+        OperationServicesVC *vc = [OperationServicesVC new];
+        [self.navigationController pushViewController:vc animated:YES];
+        [vc setSuccess:^{
+            [self.listVC beginRefresh];
+        }];
+        
+    }
+
+    
+    
+//    CDServiceTypeChooseVC *vc = [CDServiceTypeChooseVC new];
+//    
+//    //
+//    ZHNavigationController *nav = [[ZHNavigationController alloc] initWithRootViewController:vc];
+//    [self presentViewController:nav animated:YES completion:nil];
+//    
+//    [vc setSelected:^(NSInteger idx){
+//        
+//        if (idx == 0) {
+//            
+//       
+//            
+//        } else if (idx == 1) {
+//            
+//        
+//            
+//        } else if (idx == 2) {
+//            
+//      
+//            
+//            
+//        }
+//        
+//    }];
+    
+    
 
 }
 

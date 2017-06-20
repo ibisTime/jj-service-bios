@@ -70,7 +70,7 @@
             make.centerY.equalTo(self.mas_centerY);
             make.height.mas_equalTo(30);
             make.width.mas_equalTo(60);
-            make.right.equalTo(self.mas_right).offset(-60);
+            make.right.equalTo(self.mas_right).offset(-30);
             
         }];
 

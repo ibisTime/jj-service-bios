@@ -15,6 +15,8 @@
 #import "ShootServicesVC.h"
 #import "EduServicesVC.h"
 #import "CDServiceBaseModel.h"
+#import "CDOperationServicesModel.h"
+#import "OperationServicesVC.h"
 
 
 @interface CDServicesListVC ()
@@ -65,13 +67,14 @@
         case ServicesTypeOperation:
             
             goodsHelper.code = @"612116";
-            [goodsHelper modelClass:[CDServiceBaseModel class]];
+            [goodsHelper modelClass:[CDOperationServicesModel class]];
 
             break;
             
 
     }
     
+    goodsHelper.parameters[@"publisher"] = [ZHUser user].userId;
     goodsHelper.tableView = self.mineTableView;
     goodsHelper.limit = 10;
     self.mineTableView.placeHolderView = [TLPlaceholderView placeholderViewWithText:@"暂无记录"];
@@ -154,7 +157,6 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    
     switch (self.type) {
         case ServicesTypeShoot: {
         
@@ -162,6 +164,11 @@
             vc.shootModel = (CDShootServicesModel *)self.models[indexPath.row];
             [self.navigationController pushViewController:vc animated:YES];
             
+            [vc setSuccess:^{
+                
+                [self.mineTableView beginRefreshing];
+                
+            }];
         }
   
         break;
@@ -171,14 +178,23 @@
             EduServicesVC *vc = [[EduServicesVC alloc] init];
             vc.eduModel = (CDEduServicesModel *)self.models[indexPath.row];
             [self.navigationController pushViewController:vc animated:YES];
-            
+            [vc setSuccess:^{
+                [self.mineTableView beginRefreshing];
+            }];
         }
 
             break;
             
         case ServicesTypeOperation: {
         
-        
+            OperationServicesVC *vc = [[OperationServicesVC alloc] init];
+            vc.operationModel = (CDOperationServicesModel *)self.models[indexPath.row];
+            [self.navigationController pushViewController:vc animated:YES];
+            [vc setSuccess:^{
+                
+                [self.mineTableView beginRefreshing];
+                
+            }];
         }
             
             break;
@@ -219,8 +235,8 @@
     
     [cell.coverImageView sd_setImageWithURL:[NSURL URLWithString:[model.pic convertThumbnailImageUrl]]];
     cell.mainTextLbl.text = model.name;
-    cell.subTextLbl.text = [NSString stringWithFormat:@"%@",model.quoteMax];
-    cell.stateLbl.text = [NSString stringWithFormat:@"%@",model.status];
+    cell.subTextLbl.text = [NSString stringWithFormat:@"%@-%@",[model.quoteMin convertToRealMoney],[model.quoteMax convertToRealMoney]];
+    cell.stateLbl.text = [model getStatusName];
     return cell;
     
 }

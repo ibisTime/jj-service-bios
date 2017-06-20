@@ -10,7 +10,7 @@
 
 @interface CDShopAptitudesApplyVC : TLBaseVC
 
-@property (nonatomic, assign) BOOL isRe;
+//@property (nonatomic, assign) BOOL isRe;
 @property (nonatomic, copy) void(^success)();
 
 @end

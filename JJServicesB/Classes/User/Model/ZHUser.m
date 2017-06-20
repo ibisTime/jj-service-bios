@@ -44,6 +44,7 @@ NSString *const kUserInfoChange = @"kUserInfoChange_zh";
         
         [[NSUserDefaults standardUserDefaults] setObject:userId forKey:USER_ID_KEY];
         [[NSUserDefaults standardUserDefaults] setObject:token forKey:TOKEN_ID_KEY];
+        
     } else {
     
         NSLog(@"请传入用户信息");
@@ -62,6 +63,7 @@ NSString *const kUserInfoChange = @"kUserInfoChange_zh";
         
         self.userId = userId;
         self.token = token;
+        
         [self setUserInfoWithDict:[userDefault objectForKey:USER_INFO_DICT_KEY]];
         
         return YES;
@@ -132,15 +134,6 @@ NSString *const kUserInfoChange = @"kUserInfoChange_zh";
 //    
 }
 
-//- (ZHUserExt *)userExt {
-//
-//    if (!_userExt) {
-//        _userExt = [[ZHUserExt alloc] init];
-//        
-//    }
-//    return _userExt;
-//
-//}
 
 - (void)setUserInfoWithDict:(NSDictionary *)dict {
 

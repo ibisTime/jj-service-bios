@@ -167,6 +167,7 @@
     self.pwdTf = pwdTf;
     
     //登陆
+
     UIButton *regBtn = [UIButton zhBtnWithFrame:CGRectMake(margin,pwdTf.yy + 70, w, h) title:@"注册"];
     [regBtn addTarget:self action:@selector(goReg) forControlEvents:UIControlEventTouchUpInside];
     [self.bgSV addSubview:regBtn];

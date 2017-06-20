@@ -64,16 +64,16 @@
     
 }
 
-
-- (void)chooseResume:(id)sender {
-
-    if ([sender isEqual:self.upload1View.uploadBtn]) {
-        
-//        self.upload1View.imageView.image = 
-        
-    }
-
-}
+//
+//- (void)chooseResume:(id)sender {
+//
+//    if ([sender isEqual:self.upload1View.uploadBtn]) {
+//        
+////        self.upload1View.imageView.image = 
+//        
+//    }
+//
+//}
 
 - (void)selectImg:(id)sender {
     
@@ -137,17 +137,20 @@
     NSString *reusemImgSuccessKey = self.reusemImgChanged ? [TLUploadManager imageNameByImage:self.upload1View.imageView.image] : self.eduModel.resume1;
     NSString *detailImgSuccessKeys = nil;
         
-    //
+    //可能要上唇的详情图片
+    NSMutableArray *shouldUploadDetailImgKeys = [[NSMutableArray alloc] init];
     [detailImgs enumerateObjectsUsingBlock:^(UIImage * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         
-        [detailImagUrls addObject:[TLUploadManager imageNameByImage:obj]];
+        [shouldUploadDetailImgKeys addObject:[TLUploadManager imageNameByImage:obj]];
         
     }];
     
+    [detailImagUrls addObjectsFromArray:shouldUploadDetailImgKeys];
+    
+    //最终的详情url数组
     detailImgSuccessKeys = [detailImagUrls componentsJoinedByString:@"||"];
 
-    
-    
+
     if (self.coverImgChanged || self.detailImgChanged || self.reusemImgChanged) {
        //需要上传图片
         
@@ -172,12 +175,7 @@
         if (self.detailImgChanged) {
             
             [imgs addObjectsFromArray:detailImgs];
-            //去图片名成
-            [imgs enumerateObjectsUsingBlock:^(UIImage * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                
-                [imgKeys addObject:[TLUploadManager imageNameByImage:obj]];
-                
-            }];
+            [imgKeys addObjectsFromArray:shouldUploadDetailImgKeys];
          
         }
         
@@ -219,8 +217,8 @@
     http.parameters[@"pic"] = coverImgKey;
     http.parameters[@"advPic"] = detailImgKeys;
     http.parameters[@"companyCode"] = [CDCompany company].code;
-    http.parameters[@"quoteMin"] = self.quoteMinTf.text;
-    http.parameters[@"quoteMax"] = self.quoteMaxTf.text;
+    http.parameters[@"quoteMin"] = [self.quoteMinTf.text convertToSysMoney];
+    http.parameters[@"quoteMax"] = [self.quoteMaxTf.text convertToSysMoney];
     http.parameters[@"qualityCode"] = [CDCompany company].gsQualify.code;
     http.parameters[@"description"] = self.detailEditView.detailTextView.text;
     http.parameters[@"publisher"] = [ZHUser user].userId;
@@ -240,7 +238,10 @@
     
     [http postWithSuccess:^(id responseObject) {
         
-        [self.navigationController popToRootViewControllerAnimated:YES];
+        [self.navigationController popViewControllerAnimated:YES];
+        if (self.success) {
+            self.success();
+        }
         
     } failure:^(NSError *error) {
         
@@ -329,11 +330,13 @@
     if (self.eduModel) {
         
         self.nameTf.text = self.eduModel.name;
-        self.quoteMaxTf.text = [self.eduModel.quoteMax stringValue];
-        self.quoteMinTf.text = [self.eduModel.quoteMin stringValue];
+        self.quoteMaxTf.text = [self.eduModel.quoteMax convertToRealMoney];
+        self.quoteMinTf.text = [self.eduModel.quoteMin convertToRealMoney];
         
         [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:[self.eduModel.pic convertThumbnailImageUrl]]];
         self.detailEditView.images =  self.eduModel.detailPics.mutableCopy;
+//        self.detailEditView.images =  self.eduModel.detailPics.mutableCopy;
+
         self.detailEditView.detailTextView.text = self.eduModel.desc;
        [self.upload1View.imageView sd_setImageWithURL:[NSURL URLWithString:[self.eduModel.resume1 convertThumbnailImageUrl]]];
         
@@ -345,16 +348,16 @@
     } else {
     
         
-        self.nameTf.text = @"name";
-        self.quoteMaxTf.text = [NSString stringWithFormat:@"%@",@"1"];
-        self.quoteMinTf.text = [NSString stringWithFormat:@"%@",@"2"];
-        
-        self.detailEditView.detailTextView.text = @"desc";
-        
-        self.lectorNumTf.text = [@1 stringValue];
-        self.mtrainNumTf.text = [@1 stringValue];
-        self.mtrainTimesTf.text = [@3 stringValue];
-        self.courseTf.text=  @"课程";
+//        self.nameTf.text = @"name";
+//        self.quoteMaxTf.text = [NSString stringWithFormat:@"%@",@"1"];
+//        self.quoteMinTf.text = [NSString stringWithFormat:@"%@",@"2"];
+//        
+//        self.detailEditView.detailTextView.text = @"desc";
+//        
+//        self.lectorNumTf.text = [@1 stringValue];
+//        self.mtrainNumTf.text = [@1 stringValue];
+//        self.mtrainTimesTf.text = [@3 stringValue];
+//        self.courseTf.text=  @"课程";
     
     }
     
@@ -409,7 +412,7 @@
     //
     self.upload1View = [[CDImageUpLoadView alloc] initWithFrame:CGRectMake(0,  self.courseTf.yy + 0.5, SCREEN_WIDTH, 80)];
     [bgSV addSubview:self.upload1View];
-    self.upload1View.titleLbl.text = @"核心讲师简历1";
+    self.upload1View.titleLbl.text = @"核心讲师简历";
     [self.upload1View.uploadBtn addTarget:self action:@selector(selectImg:) forControlEvents:UIControlEventTouchUpInside];
     
     //
@@ -472,6 +475,13 @@
         
         [TLAlert alertWithInfo:@"请选详情图片"];
         
+        return NO;
+    }
+    
+    //
+    if (![self.detailEditView.detailTextView.text valid]) {
+        
+        [TLAlert alertWithInfo:@"请输入详情"];
         return NO;
     }
     

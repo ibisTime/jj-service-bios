@@ -66,7 +66,7 @@
     }
     
     TypeModel *model = self.typeArrays[indexPath.row];
-    cell.textLabel.text = model.key;
+    cell.textLabel.text = model.value;
     return cell;
     
 }

@@ -42,7 +42,7 @@ void TLLog(NSString *format, ...) {
     switch (_runEnv) {
         case RunEnvRelease: {
         
-           self.qiniuDomain = @"http://omxvtiss6.bkt.clouddn.com";
+           self.qiniuDomain = @"http://oru1eha7u.bkt.clouddn.com";
            self.chatKey = @"1139170317178872#zhpay";
            self.addr = @"http://139.224.200.54:5601"; //test
            self.shareBaseUrl = @"http://m.zhenghuijituan.com";
@@ -51,11 +51,12 @@ void TLLog(NSString *format, ...) {
             
         case RunEnvTest: {
             
-            self.qiniuDomain = @"http://omxvtiss6.bkt.clouddn.com";
-            self.chatKey = @"1139170317178872#zhpay";
+            
+            self.qiniuDomain = @"http://oru1eha7u.bkt.clouddn.com";
+//            self.chatKey = @"1139170317178872#zhpay";
             
             self.addr = @"http://118.178.124.16:5501";
-            self.shareBaseUrl = @"http://118.178.124.16:5603";
+//            self.shareBaseUrl = @"http://118.178.124.16:5603";
             
         } break;
             
@@ -68,19 +69,20 @@ void TLLog(NSString *format, ...) {
             
 //            self.qiniuDomain = @"http://omxvtiss6.bkt.clouddn.com";
             
-             self.qiniuDomain = @"http://or4e1nykg.bkt.clouddn.com";
+             self.qiniuDomain = @"http://oru1eha7u.bkt.clouddn.com";
             
             
             
-            self.chatKey = @"1139170317178872#zhpay";
+//            self.chatKey = @"1139170317178872#zhpay";
             self.addr = @"http://121.43.101.148:8901";
-            self.shareBaseUrl = @"http://osszhqb.hichengdai.com/share";
+//            self.shareBaseUrl = @"http://osszhqb.hichengdai.com/share";
 
         } break;
             
     }
     
 }
+
 
 - (NSString *)pushKey {
 

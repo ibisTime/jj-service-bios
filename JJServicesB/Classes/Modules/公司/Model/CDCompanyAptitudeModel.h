@@ -4,7 +4,7 @@
 //
 //  Created by  tianlei on 2017/6/16.
 //  Copyright © 2017年  tianlei. All rights reserved.
-//  公司--资质
+//  店铺--资质
 
 #import "TLBaseModel.h"
 
@@ -24,7 +24,12 @@
 //@property (nonatomic, copy) NSString *description;
 
 @property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *slogan;
 
+
+
+//作为 店铺资质才有的字段
+@property (nonatomic, copy) NSString *qualifyCode;
 @property (nonatomic, copy) NSString *qualifyName;
 
 

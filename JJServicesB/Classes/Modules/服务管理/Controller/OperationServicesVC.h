@@ -7,7 +7,13 @@
 //
 
 #import "ServicesBaseVC.h"
+#import "CDOperationServicesModel.h"
+
 
 @interface OperationServicesVC : ServicesBaseVC
+
+@property (nonatomic, strong) CDOperationServicesModel *operationModel;
+
+@property (nonatomic, copy) void(^success)();
 
 @end

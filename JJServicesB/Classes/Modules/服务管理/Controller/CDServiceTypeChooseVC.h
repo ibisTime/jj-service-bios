@@ -10,4 +10,6 @@
 
 @interface CDServiceTypeChooseVC : TLBaseVC
 
+@property (nonatomic, copy) void(^selected)(NSInteger idx);
+
 @end

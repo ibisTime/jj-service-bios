@@ -306,7 +306,7 @@
 //    UILabel *nameLbl = [UILabel labelWithFrame:CGRectMake(15, 5, 100, 25) textAligment:NSTextAlignmentLeft backgroundColor:[UIColor whiteColor] font:[UIFont secondFont] textColor:[UIColor zh_textColor]];
 //    [headerView addSubview:nameLbl];
 //    nameLbl.centerY = headerView.height/2.0;
-//    nameLbl.text = @"公司封面";
+//    nameLbl.text = @"店铺封面";
 //    //    self.coverHintLbl = nameLbl;
 //
 //    //

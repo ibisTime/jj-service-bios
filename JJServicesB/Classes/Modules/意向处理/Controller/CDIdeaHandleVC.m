@@ -10,12 +10,13 @@
 #import "TLPageDataHelper.h"
 #import "CDDefaultCell.h"
 #import "CDIdeaDetailVC.h"
+#import "CDIdeaModel.h"
 
 
 @interface CDIdeaHandleVC ()<UITableViewDelegate, UITableViewDataSource>
 
 
-@property (nonatomic,strong) NSMutableArray *models; //商品
+@property (nonatomic,strong) NSMutableArray <CDIdeaModel *>*models; //商品
 @property (nonatomic,assign) BOOL isFirst;
 
 
@@ -44,8 +45,7 @@
     [super viewDidLoad];
     
     self.isFirst = YES;
-    self.models = [NSMutableArray array];
-    [self.models addObject:@2];
+//    self.models = [NSMutableArray array];
     
     
     //普通商品
@@ -60,11 +60,11 @@
     ///
     __weak typeof(self) weakself = self;
     TLPageDataHelper *goodsHelper = [[TLPageDataHelper alloc] init];
-    goodsHelper.code = @"808025";
-    goodsHelper.isAutoDeliverCompanyCode = NO;
-    goodsHelper.parameters[@"companyCode"] = [ZHUser user].userId;
-    //    [goodsHelper modelClass:[ZHGoodsModel class]];
+    goodsHelper.code = @"612175";
     goodsHelper.tableView = self.mineTableView;
+    goodsHelper.parameters[@"companyCode"] = [CDCompany company].code;
+    [goodsHelper modelClass:[CDIdeaModel class]];
+    
     
     self.mineTableView.placeHolderView = [TLPlaceholderView placeholderViewWithText:@"暂无记录"];
     
@@ -72,8 +72,8 @@
         
         [goodsHelper refresh:^(NSMutableArray *objs, BOOL stillHave) {
             
-            //            weakself.models = objs;
-            //            [weakself.mineTableView reloadData_tl];
+                        weakself.models = objs;
+                        [weakself.mineTableView reloadData_tl];
             
             
         } failure:^(NSError *error) {
@@ -88,8 +88,8 @@
         
         [goodsHelper loadMore:^(NSMutableArray *objs, BOOL stillHave) {
             
-            //            weakself.models = objs;
-            //            [weakself.mineTableView reloadData_tl];
+                        weakself.models = objs;
+                        [weakself.mineTableView reloadData_tl];
             
             
         } failure:^(NSError *error) {
@@ -102,24 +102,28 @@
 }
 
 
-- (nullable NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    UITableViewRowAction *rowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"删除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
-        
-        [self.models removeObjectAtIndex:indexPath.row];
-        [(TLTableView *)tableView reloadData_tl];
-        
-    }];
-    
-    return @[rowAction];
-    
-}
+//- (nullable NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    
+//    UITableViewRowAction *rowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"删除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+//        
+//        [self.models removeObjectAtIndex:indexPath.row];
+//        [(TLTableView *)tableView reloadData_tl];
+//        
+//    }];
+//    
+//    return @[rowAction];
+//    
+//}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     CDIdeaDetailVC *ideaVC = [CDIdeaDetailVC new];
     [self.navigationController pushViewController:ideaVC animated:YES];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    ideaVC.model = self.models[indexPath.row];
+    [ideaVC setSuccess:^{
+        [self.mineTableView beginRefreshing];
+    }];
     
 }
 
@@ -140,11 +144,14 @@
     }
     
     cell.imageView.backgroundColor = [UIColor orangeColor];
-    cell.mainTextLbl.text = @"主要";
-    cell.subTextLbl.text = @"次要";
-    cell.timeLbl.text = @"2019-23-32";
-    cell.stateLbl.text = @"状态";
     
+    CDIdeaModel *model = self.models[indexPath.row];
+    
+    [cell.coverImageView sd_setImageWithURL:[NSURL URLWithString:[model.logo convertThumbnailImageUrl]]];
+    cell.mainTextLbl.text = model.intName;
+    cell.subTextLbl.text = [model.submitDatetime convertToDetailDate];
+//    cell.timeLbl.text = @"2019-23-32";
+    cell.stateLbl.text = [model getStatusName];
     return cell;
     
 }

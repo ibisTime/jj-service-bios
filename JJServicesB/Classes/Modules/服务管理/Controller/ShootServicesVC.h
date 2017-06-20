@@ -13,4 +13,6 @@
 
 @property (nonatomic, strong) CDShootServicesModel *shootModel;
 
+@property (nonatomic, copy) void(^success)();
+
 @end

@@ -14,4 +14,6 @@
 @property (nonatomic, strong) CDEduServicesModel *eduModel;
 
 //
+@property (nonatomic, copy) void(^success)();
+
 @end

@@ -1,4 +1,4 @@
-//
+ //
 //  CDCompany.m
 //  JJServicesB
 //
@@ -24,6 +24,33 @@
     
     return company;
     
+}
+
+- (void)loginOut {
+
+    unsigned int count;// 记录属性个数
+    objc_property_t *properties = class_copyPropertyList([self class], &count);
+    // 遍历
+    for (int i = 0; i < count; i++) {
+        
+        // An opaque type that represents an Objective-C declared property.
+        objc_property_t property = properties[i];
+        // 获取属性的名称
+        const char *cName = property_getName(property);
+        
+        
+        // 转换为Objective
+        NSString *name = [NSString stringWithCString:cName encoding:NSUTF8StringEncoding];
+        
+        //基础数据类型，不能置为nil
+        if ([name isEqualToString:@"aptitudeType"] || [name isEqualToString:@"detailPics"]) {
+            
+            continue;
+        }
+        
+        [self setValue:nil forKeyPath:name];
+    }
+
 }
 
 
@@ -55,8 +82,8 @@
     
     }
     
-
 }
+
 
 - (void)getShopInfoSuccess:(void(^)(NSDictionary *shopDict))success failure:(void(^)(NSError *error))failure {
     
@@ -103,6 +130,60 @@
     
     
 }
+
+- (void)getAptitudeModelsSuccess:(void(^)())success failure:(void(^)())failure {
+
+
+    TLNetworking *http = [TLNetworking new];
+    http.code = @"612016";
+    //0 待审核 1 审核通过 2 审核不通过
+    //    http.parameters[@"status"] = @"1";
+    [http postWithSuccess:^(id responseObject) {
+        
+        
+        self.aptitudeModles = [CDCompanyAptitudeModel tl_objectArrayWithDictionaryArray:responseObject[@"data"]];
+        
+        NSMutableArray *arr = [[NSMutableArray alloc] initWithCapacity:3];
+        
+        [self.aptitudeModles enumerateObjectsUsingBlock:^(CDCompanyAptitudeModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            
+//            NSLog(@"%@-%@",obj.name,obj.code);
+
+            if ([obj.code isEqualToString:@"1"] || [obj.code isEqualToString:@"2"] || [obj.code isEqualToString:@"4"]) {
+                
+                [arr addObject:obj];
+//               人才招聘-9
+//                产业园-8
+//                 软件开发-7
+//                仓配服务-6
+//             客服外包-5
+//                店铺代运营-4
+//                 美工外包-3
+//                摄影/拍摄-2
+//                培训-1
+                
+
+            }
+        }];
+        
+        self.aptitudeModles = arr;
+        
+        if (success) {
+            success();
+        }
+        
+    } failure:^(NSError *error) {
+        
+        if (failure) {
+            failure();
+        }
+        
+    }];
+
+}
+
+
+
 
 - (NSArray<NSString *> *)detailPics {
     

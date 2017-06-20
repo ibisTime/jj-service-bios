@@ -72,15 +72,15 @@
     }
     
     //
-    if (!self.isFirst) {
-        
-        [self hiddenNavBar];
-        
-    } else {
-    
-        self.isFirst = NO;
-    
-    }
+//    if (!self.isFirst) {
+//        
+//        [self hiddenNavBar];
+//        
+//    } else {
+//    
+//        self.isFirst = NO;
+//    
+//    }
     
     
 }
@@ -119,8 +119,9 @@
         return;
         
     }
-
-    //1.获取公司信息
+    
+   
+    //1.获取店铺信息
     [TLProgressHUD showWithStatus:nil];
     [[CDCompany company] getShopInfoSuccess:^(NSDictionary *shopDict) {
         
@@ -141,8 +142,9 @@
                 
                 [self.view addSubview:self.aptitudeView];
 
-                self.aptitudeInfoLbl.text = [NSString stringWithFormat:@"尊敬的%@ \n您申请的%@\n还在审核中，我们将在1-2工作日内回复你",[CDCompany company].corporation,[CDCompany company].gsQualify.qualifyName];
+                self.aptitudeInfoLbl.text = [NSString stringWithFormat:@"尊敬的%@ \n您申请的%@\n还在审核中，我们将在1-2工作日内回复您",[CDCompany company].corporation,[CDCompany company].gsQualify.qualifyName];
                 self.reApplyBtn.hidden = YES;
+                self.refuseLbl.text = nil;
                 
             }
             break;
@@ -171,7 +173,7 @@
                 [self.view addSubview:self.aptitudeView];
                 self.reApplyBtn.hidden = NO;
 
-                self.aptitudeInfoLbl.text = [NSString stringWithFormat:@"尊敬的%@ \n您申请的%@\n还在审核中，我们将在1-2工作日内回复你",[CDCompany company].corporation,[CDCompany company].gsQualify.qualifyName];
+                self.aptitudeInfoLbl.text = [NSString stringWithFormat:@"尊敬的%@ \n您申请的%@\n还在审核中，我们将在1-2工作日内回复您",[CDCompany company].corporation,[CDCompany company].gsQualify.qualifyName];
                 self.refuseLbl.text = [NSString stringWithFormat:@"审核不通过，理由是：%@",[CDCompany company].remark];
                 
             }
@@ -203,10 +205,10 @@
 - (void)reApplyAptitudeAction {
 
     CDShopAptitudesApplyVC *vc = [[CDShopAptitudesApplyVC alloc] init];
-    vc.isRe = YES;
     [self.navigationController pushViewController:vc animated:YES];
     [vc setSuccess:^{
        
+        [self.navigationController popViewControllerAnimated:YES];
         [self refresh];
         
     }];
@@ -292,16 +294,14 @@
 - (void)addNotification {
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userInfoChange) name:kUserInfoChange object:nil];
+    
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(shopInfoChange) name:kUserInfoChange object:nil];
     //未读消息
 
 }
 
 
-- (void)updateShopInfo {
 
-
-}
 
 
 #pragma mark- 用户信息变更的通知,处理
@@ -313,7 +313,7 @@
     http.parameters[@"token"] = [ZHUser user].token;
     [http postWithSuccess:^(id responseObject) {
         
-        [[ZHUser user] saveUserInfo:responseObject[@"data"] token:nil userId:nil];
+        [[ZHUser user] saveUserInfo:responseObject[@"data"] token:[ZHUser user].token userId:[ZHUser user].userId];
         [[ZHUser user] setUserInfoWithDict:responseObject[@"data"]];
         
     } failure:^(NSError *error) {
@@ -342,7 +342,7 @@
     
 //    [self getAccountInfo]; //获取账户信息
     [self userInfoChange]; //用户信息变更
-    [self updateShopInfo]; //异步更新用户信息
+    
 
 }
 

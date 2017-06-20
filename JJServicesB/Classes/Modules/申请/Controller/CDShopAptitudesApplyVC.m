@@ -36,7 +36,6 @@
     
     [self setPlaceholderViewTitle:@"加载失败" operationTitle:@"重新加载"];
     
-    self.title = @"申请资质";
     [self tl_placeholderOperation];
     
  
@@ -44,25 +43,48 @@
 
 - (void)tl_placeholderOperation {
 
-    //查资质
-    TLNetworking *http = [TLNetworking new];
-    http.showView = self.view;
-    http.code = @"612016";
-    //0 待审核 1 审核通过 2 审核不通过
-    //    http.parameters[@"status"] = @"1";
-    [http postWithSuccess:^(id responseObject) {
+    [TLProgressHUD showWithStatus:nil];
+    [[CDCompany company] getAptitudeModelsSuccess:^{
         
         [self removePlaceholderView];
+        [TLProgressHUD dismiss];
+        self.aptitudeModles = [CDCompany company].aptitudeModles;
+        
         
         [self setUpUI];
         [self initData];
-        self.aptitudeModles = [CDCompanyAptitudeModel tl_objectArrayWithDictionaryArray:responseObject[@"data"]];
         
-    } failure:^(NSError *error) {
+    } failure:^{
         
+        [TLProgressHUD dismiss];
         [self addPlaceholderView];
-        
+
     }];
+    
+    
+    //查资质
+//    TLNetworking *http = [TLNetworking new];
+//    http.showView = self.view;
+//    http.code = @"612016";
+//    //0 待审核 1 审核通过 2 审核不通过
+//    http.parameters[@"status"] = @"1";
+//    [http postWithSuccess:^(id responseObject) {
+//        
+//      
+//        [self removePlaceholderView];
+//        
+//        self.aptitudeModles = [CDCompanyAptitudeModel tl_objectArrayWithDictionaryArray:responseObject[@"data"]];
+//        
+//        
+//        [self setUpUI];
+//        [self initData];
+//        
+//    } failure:^(NSError *error) {
+//        
+//        [self addPlaceholderView];
+//
+//        
+//    }];
 
 }
 
@@ -70,6 +92,27 @@
 - (void)initData {
 
     self.nameTf.text = [CDCompany company].name;
+    self.title = @"申请资质";
+
+    if ([CDCompany company].gsQualify.code) {
+        
+        self.title = @"重新申请";
+        self.aptitudeChooseTf.text = [CDCompany company].gsQualify.qualifyName;
+        self.sloganTf.text = [CDCompany company].gsQualify.slogan;
+//        self.zoneTf.text =  @"---";
+        
+        [self.aptitudeModles enumerateObjectsUsingBlock:^(CDCompanyAptitudeModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            
+            if ([obj.code isEqualToString:[CDCompany company].gsQualify.qualifyCode]) {
+                
+                self.currentAptitudeModel = obj;
+
+            }
+            
+        }];
+
+        
+    }
 
 }
 
@@ -81,6 +124,7 @@
         [arr addObject:obj.name];
         
     }];
+    //
     TLPickerView *picker = [TLPickerView pickerView];
     picker.tagNames = arr;
     [picker show];
@@ -100,16 +144,16 @@
 - (void)confirm {
     
     if (!self.currentAptitudeModel) {
-        [TLAlert alertWithInfo:@"请选择公司资质"];
+        [TLAlert alertWithInfo:@"请选择店铺资质"];
         return;
     }
     
-    if (!self.sloganTf.text) {
+    if (![self.sloganTf.text valid]) {
         [TLAlert alertWithInfo:@"请输入广告语"];
         return;
     }
     
-    if (!self.zoneTf.text) {
+    if (![self.zoneTf.text valid]) {
         [TLAlert alertWithInfo:@"请输入报价区间"];
         return;
     }
@@ -118,7 +162,7 @@
     TLNetworking *http = [TLNetworking new];
     http.showView = self.view;
     
-    if (self.isRe) {
+    if ([CDCompany company].gsQualify.code) {
         //重新申请
         http.code = @"612072";
         http.parameters[@"code"] = [CDCompany company].gsQualify.code;
@@ -138,7 +182,11 @@
     http.parameters[@"applyUser"] = [ZHUser user].userId;
     [http postWithSuccess:^(id responseObject) {
         
-        [CDCompany company].gsQualify = [[CDCompanyAptitudeModel alloc] init];
+        if (![CDCompany company].gsQualify.code) {
+            
+            [CDCompany company].gsQualify = [[CDCompanyAptitudeModel alloc] init];
+
+        }
         
         if (self.success) {
             

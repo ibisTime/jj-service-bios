@@ -10,7 +10,10 @@
 //#import "ZHGoodsDetailEditView.h"
 #import "TypeChooseVC.h"
 #import "TypeModel.h"
-
+#import "CDImageUpLoadView.h"
+#import "QNUploadManager.h"
+#import "TLUploadManager.h"
+#import "TLImagePicker.h"
 
 @interface ShootServicesVC ()
 
@@ -23,13 +26,23 @@
 
 @property (nonatomic, strong) TLTextField *isDingZhiTf;
 @property (nonatomic, strong) TLTextField *scpslmTf;
-@property (nonatomic, strong) TLTextField *worksTf;
+
+@property (nonatomic, strong) CDImageUpLoadView *worksUploadView;
+
 @property (nonatomic, copy) NSString *isDingZhi;
 
 
+@property (nonatomic, assign) BOOL coverImgChanged;
+@property (nonatomic, assign) BOOL detailImgChanged;
+@property (nonatomic, assign) BOOL reusemImgChanged;
+
 @end
 
-@implementation ShootServicesVC
+@implementation ShootServicesVC {
+
+    TLImagePicker *_picker;
+
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -72,8 +85,8 @@
     if (self.shootModel) {
        
         self.nameTf.text = self.shootModel.name;
-        self.quoteMaxTf.text = [NSString stringWithFormat:@"%@",self.shootModel.quoteMax];
-        self.quoteMinTf.text = [NSString stringWithFormat:@"%@",self.shootModel.quoteMin];
+        self.quoteMaxTf.text = [NSString stringWithFormat:@"%@",[self.shootModel.quoteMax convertToRealMoney]];
+        self.quoteMinTf.text = [NSString stringWithFormat:@"%@",[self.shootModel.quoteMin convertToRealMoney]];
         
         [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:[self.shootModel.pic convertThumbnailImageUrl]]];
         self.detailEditView.images =  self.shootModel.detailPics.mutableCopy;
@@ -82,7 +95,8 @@
         self.pyNumTf.text = [self.shootModel.pyNum stringValue];
         self.sysNumTf.text = [self.shootModel.sysNum stringValue];
         self.scpslmTf.text = self.shootModel.scpslm;
-        self.worksTf.text = self.shootModel.works;
+        NSURL *url = [NSURL URLWithString:[self.shootModel.works convertThumbnailImageUrl]];
+        [self.worksUploadView.imageView sd_setImageWithURL:url];
 
         self.isDingZhi = self.shootModel.isDz;
         if ([self.shootModel.status isEqualToString:@"1"]) {
@@ -99,10 +113,6 @@
 
     
     //
-
-    
-    //
-    
 }
 
 
@@ -129,6 +139,265 @@
     
     
 }
+
+#pragma mark- 保存操作
+- (void)saveService {
+    
+    if (![self valitInput]) {
+        
+        return;
+    }
+    
+    //先上传图片后提交信息
+    [self uploadImgAfterSaveInfo];
+    
+    //
+    
+}
+
+- (void)uploadImgAfterSaveInfo {
+    
+    
+    //元素为已上传的图片，可能为 0
+    __block NSMutableArray <NSString *>*detailImagUrls = [NSMutableArray array];
+    //元素为未上传的图片，可能为 0
+    __block  NSMutableArray <UIImage *>*detailImgs = [NSMutableArray array];
+    [self.detailEditView.images enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        if ([obj isKindOfClass:[UIImage class]]) {
+            
+            self.detailImgChanged = YES;
+            [detailImgs addObject:obj];
+            
+            //第一张已经为[uiimage image] 后续肯定为Img
+            if(idx == 0) {
+                *stop = YES;
+                detailImgs = self.detailEditView.images;
+            }
+            
+        } else { //为url
+            
+            [detailImagUrls addObject:obj];
+            
+        }
+        
+    }];
+    
+    
+    //加入图片全部上传成功后应该的到的key
+    NSString *coverImgSuccessKey = self.coverImgChanged ? [TLUploadManager imageNameByImage:self.coverImageView.image] : self.shootModel.pic;
+    
+    NSString *reusemImgSuccessKey = self.reusemImgChanged ? [TLUploadManager imageNameByImage:self.worksUploadView.imageView.image] : self.shootModel.works;
+    NSString *detailImgSuccessKeys = nil;
+    
+    //可能要上唇的详情图片
+    NSMutableArray *shouldUploadDetailImgKeys = [[NSMutableArray alloc] init];
+    [detailImgs enumerateObjectsUsingBlock:^(UIImage * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        [shouldUploadDetailImgKeys addObject:[TLUploadManager imageNameByImage:obj]];
+        
+    }];
+    
+    [detailImagUrls addObjectsFromArray:shouldUploadDetailImgKeys];
+    
+    //最终的详情url数组
+    detailImgSuccessKeys = [detailImagUrls componentsJoinedByString:@"||"];
+    
+    
+    if (self.coverImgChanged || self.detailImgChanged || self.reusemImgChanged) {
+        //需要上传图片
+        
+        NSMutableArray <UIImage *>*imgs = [[NSMutableArray alloc] init];
+        NSMutableArray <NSString *>*imgKeys = [[NSMutableArray alloc] initWithCapacity:imgs.count];
+        
+        
+        if (self.coverImgChanged) {
+            
+            [imgs addObject:self.coverImageView.image];
+            [imgKeys addObject:coverImgSuccessKey];
+            
+        }
+        
+        if (self.reusemImgChanged) {
+            
+            [imgs addObject:self.worksUploadView.imageView.image];
+            [imgKeys addObject:reusemImgSuccessKey];
+            
+        }
+        
+        if (self.detailImgChanged) {
+            
+            [imgs addObjectsFromArray:detailImgs];
+            [imgKeys addObjectsFromArray:shouldUploadDetailImgKeys];
+            
+        }
+        
+        
+        
+        [self uploadImgWithImgs:imgs keys:imgKeys success:^{
+            
+            [self uploadServices:coverImgSuccessKey resumImgKey:reusemImgSuccessKey detailImgKeys:detailImgSuccessKeys];
+            
+            
+        }];
+        return;
+        
+    }
+    
+    //不需要上传图片
+    [self uploadServices:coverImgSuccessKey resumImgKey:reusemImgSuccessKey detailImgKeys:detailImgSuccessKeys];
+    
+}
+
+
+- (void)uploadServices:(NSString *)coverImgKey resumImgKey:(NSString *)reusemImgKey detailImgKeys:(NSString *)detailImgKeys {
+    
+    TLNetworking *http = [TLNetworking new];
+    http.showView = self.view;
+    
+    if (self.shootModel) {
+        
+        http.code = @"612082";
+        http.parameters[@"code"] = self.shootModel.code;
+        
+    } else {
+        
+        http.code = @"612080";
+        
+    }
+    http.parameters[@"name"] = self.nameTf.text;
+    http.parameters[@"pic"] = coverImgKey;
+    http.parameters[@"advPic"] = detailImgKeys;
+    http.parameters[@"companyCode"] = [CDCompany company].code;
+    http.parameters[@"quoteMin"] = [self.quoteMinTf.text convertToSysMoney];
+    http.parameters[@"quoteMax"] = [self.quoteMaxTf.text convertToSysMoney];
+    http.parameters[@"qualityCode"] = [CDCompany company].gsQualify.code;
+    http.parameters[@"works"] = reusemImgKey;
+    http.parameters[@"description"] = self.detailEditView.detailTextView.text;
+    http.parameters[@"publisher"] = [ZHUser user].userId;
+    
+    //
+    http.parameters[@"pyNum"] = self.pyNumTf.text;
+    http.parameters[@"isDz"] = self.isDingZhi;
+    http.parameters[@"sysNum"] = self.sysNumTf.text;
+    http.parameters[@"scpslm"] = self.scpslmTf.text;
+    
+    [http postWithSuccess:^(id responseObject) {
+        
+        [self.navigationController popViewControllerAnimated:YES];
+        if (self.success) {
+            self.success();
+        }
+        
+    } failure:^(NSError *error) {
+        
+        
+    }];
+    
+    
+    
+    
+}
+
+
+
+- (void)uploadImgWithImgs:(NSArray<UIImage *> *)imgs keys:(NSArray <NSString *>*)nameKeys success:(void(^)())success {
+    
+    
+    if (!imgs || !nameKeys || imgs.count != nameKeys.count) {
+        
+        [TLAlert alertWithInfo:@"请检查图片数组"];
+        return;
+    }
+    
+    //
+    dispatch_group_t uploadImgGroup = dispatch_group_create();
+    TLNetworking *getUploadToken = [TLNetworking new];
+    getUploadToken.showView = self.view;
+    getUploadToken.code = @"807900";
+    getUploadToken.parameters[@"token"] = [ZHUser user].token;
+    [getUploadToken postWithSuccess:^(id responseObject) {
+        
+        //
+        __block NSInteger successCount = 0;
+        
+        [TLProgressHUD showWithStatus:nil];
+        QNUploadManager *uploadManager = [TLUploadManager qnUploadManager];
+        NSString *token = responseObject[@"data"][@"uploadToken"];
+        
+        [imgs enumerateObjectsUsingBlock:^(UIImage * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            
+            dispatch_group_enter(uploadImgGroup);
+            NSData *data =  UIImageJPEGRepresentation(obj, 1);
+            [uploadManager putData:data key:nameKeys[idx] token:token complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
+                
+                dispatch_group_leave(uploadImgGroup);
+                
+                if (info.error) {
+                    [TLAlert alertWithHUDText:@"店铺上传失败"];
+                    return ;
+                    
+                }
+                successCount ++;
+                
+            } option:nil];
+            
+        }];
+        
+        //
+        dispatch_group_notify(uploadImgGroup, dispatch_get_main_queue(), ^{
+            
+            [TLProgressHUD dismiss];
+            
+            if (successCount == nameKeys.count) {
+                //上传完成
+                
+                if (success) {
+                    success();
+                }
+                
+            }
+            
+            
+        });
+        
+    } failure:^(NSError *error) {
+        
+        
+    }];
+    
+    
+}
+
+
+- (void)selectImg:(id)sender {
+    
+    __weak typeof(self) weakself = self;
+    _picker = [[TLImagePicker alloc] initWithVC:self];
+    _picker.pickFinish = ^(NSDictionary *info){
+        
+        UIImage *image = info[@"UIImagePickerControllerOriginalImage"];
+        
+        if ([sender isEqual:weakself.worksUploadView.uploadBtn]) {
+            
+            weakself.worksUploadView.imageView.image = image;
+            weakself.reusemImgChanged = YES;
+            
+        } else {
+            
+            //封面图上传
+            weakself.coverImageView.image = image;
+            weakself.coverImgChanged = YES;
+            
+        }
+        
+    };
+    
+    [_picker picker];
+    
+    
+}
+
 
 //
 - (void)setUpUI {
@@ -166,17 +435,24 @@
     [bgSV addSubview:self.scpslmTf];
     
     //
-    self.worksTf = [self tfWithFrame:CGRectMake(0, self.scpslmTf.yy, SCREEN_WIDTH, 45) leftTitle:@"作品" placeholder:@"请输入"];
-    [bgSV addSubview:self.worksTf];
+//    self.worksTf = [self tfWithFrame:CGRectMake(0, self.scpslmTf.yy, SCREEN_WIDTH, 45) leftTitle:@"作品" placeholder:@"请输入"];
+//    [bgSV addSubview:self.worksTf];
     
     //
-    self.isDingZhiTf = [self tfWithFrame:CGRectMake(0, self.worksTf.yy, SCREEN_WIDTH, 45) leftTitle:@"是否定制" placeholder:@"请选择"];
+    self.isDingZhiTf = [self tfWithFrame:CGRectMake(0, self.scpslmTf.yy + 0.5, SCREEN_WIDTH, 45) leftTitle:@"是否定制" placeholder:@"请选择"];
     [bgSV addSubview:self.isDingZhiTf];
     self.isDingZhiTf.enabled = NO;
     
     UIControl *maskCtrl = [[UIControl alloc] initWithFrame:self.isDingZhiTf.frame];
     [bgSV addSubview:maskCtrl];
     [maskCtrl addTarget:self action:@selector(chooseType) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.worksUploadView = [[CDImageUpLoadView alloc] initWithFrame:CGRectMake(0,  self.isDingZhiTf.yy + 0.5, SCREEN_WIDTH, 80)];
+    [bgSV addSubview:self.worksUploadView];
+    self.worksUploadView.titleLbl.text = @"作品";
+    [self.worksUploadView.uploadBtn addTarget:self action:@selector(selectImg:) forControlEvents:UIControlEventTouchUpInside];
+    
+
     
     
     //简介
@@ -185,7 +461,7 @@
     //    self.detailEditView.typeNameLbl.text = @"描述";
     //    [bgSV addSubview:self.detailEditView];
     
-    self.detailEditView.y = self.worksTf.yy + 10;
+    self.detailEditView.y = self.worksUploadView.yy + 10;
     
     //
     UIButton *confirmBtn = [UIButton zhBtnWithFrame:CGRectMake(20, self.detailEditView.yy + 30, SCREEN_WIDTH - 40, 45) title:@"确认"];
@@ -204,12 +480,11 @@
     
 }
 
-#pragma mark- 保存操作
-- (void)saveService {
-    
-    [self saveWithCoverImg:self.shootModel ? self.shootModel.pic : nil];
-    
-}
+//- (void)saveService {
+//    
+//    [self saveWithCoverImg:self.shootModel ? self.shootModel.pic : nil];
+//    
+//}
 
 
 - (BOOL)valitInput {
@@ -224,6 +499,12 @@
         
         [TLAlert alertWithInfo:@"请选详情图片"];
         
+        return NO;
+    }
+    
+    if (![self.detailEditView.detailTextView.text valid]) {
+        
+        [TLAlert alertWithInfo:@"请输入详情"];
         return NO;
     }
     
@@ -264,9 +545,9 @@
         return NO;
     }
     
-    if (![self.worksTf.text valid]) {
+    if (!self.worksUploadView.imageView.image) {
         
-        [TLAlert alertWithInfo:@"输入作品"];
+        [TLAlert alertWithInfo:@"请上传作品"];
         return NO;
     }
     
@@ -280,52 +561,55 @@
     return YES;
 }
 
-
-- (void)upLoadImageSuccessCoverImgKey:(NSString *)coverImageKey detailImageKeys:(NSString *)keys {
-    
-    TLNetworking *http = [TLNetworking new];
-    http.showView = self.view;
-    
-    if (self.shootModel) {
-        
-        http.code = @"612082";
-        http.parameters[@"code"] = self.shootModel.code;
-
-    } else {
-    
-        http.code = @"612080";
-
-    }
-    http.parameters[@"name"] = self.nameTf.text;
-    http.parameters[@"pic"] = coverImageKey;
-    http.parameters[@"advPic"] = keys;
-    http.parameters[@"companyCode"] = [CDCompany company].code;
-    http.parameters[@"quoteMin"] = self.quoteMinTf.text;
-    http.parameters[@"quoteMax"] = self.quoteMaxTf.text;
-    http.parameters[@"qualityCode"] = [CDCompany company].gsQualify.code;
-    http.parameters[@"works"] = self.worksTf.text;
-    http.parameters[@"description"] = self.detailEditView.detailTextView.text;
-    http.parameters[@"publisher"] = [ZHUser user].userId;
-    
-    //
-    http.parameters[@"pyNum"] = self.pyNumTf.text;
-    http.parameters[@"isDz"] = self.isDingZhi;
-    http.parameters[@"sysNum"] = self.sysNumTf.text;
-    http.parameters[@"scpslm"] = self.scpslmTf.text;
-    
-    [http postWithSuccess:^(id responseObject) {
-        
-        [self.navigationController popToRootViewControllerAnimated:YES];
-        
-    } failure:^(NSError *error) {
-        
-        
-    }];
-    
-    
-    
-    
-}
+//
+//- (void)upLoadImageSuccessCoverImgKey:(NSString *)coverImageKey detailImageKeys:(NSString *)keys {
+//    
+//    TLNetworking *http = [TLNetworking new];
+//    http.showView = self.view;
+//    
+//    if (self.shootModel) {
+//        
+//        http.code = @"612082";
+//        http.parameters[@"code"] = self.shootModel.code;
+//
+//    } else {
+//    
+//        http.code = @"612080";
+//
+//    }
+//    http.parameters[@"name"] = self.nameTf.text;
+//    http.parameters[@"pic"] = coverImageKey;
+//    http.parameters[@"advPic"] = keys;
+//    http.parameters[@"companyCode"] = [CDCompany company].code;
+//    http.parameters[@"quoteMin"] = self.quoteMinTf.text;
+//    http.parameters[@"quoteMax"] = self.quoteMaxTf.text;
+//    http.parameters[@"qualityCode"] = [CDCompany company].gsQualify.code;
+//    http.parameters[@"works"] = self.worksUploadView.text;
+//    http.parameters[@"description"] = self.detailEditView.detailTextView.text;
+//    http.parameters[@"publisher"] = [ZHUser user].userId;
+//    
+//    //
+//    http.parameters[@"pyNum"] = self.pyNumTf.text;
+//    http.parameters[@"isDz"] = self.isDingZhi;
+//    http.parameters[@"sysNum"] = self.sysNumTf.text;
+//    http.parameters[@"scpslm"] = self.scpslmTf.text;
+//    
+//    [http postWithSuccess:^(id responseObject) {
+//        
+//        [self.navigationController popViewControllerAnimated:YES];
+//        if (self.success) {
+//            self.success();
+//        }
+//        
+//    } failure:^(NSError *error) {
+//        
+//        
+//    }];
+//    
+//    
+//    
+//    
+//}
 
 - (TLTextField *)tfWithFrame:(CGRect)frame leftTitle:(NSString *)title placeholder:(NSString *)placeholder {
     
@@ -356,7 +640,7 @@
 //    UILabel *nameLbl = [UILabel labelWithFrame:CGRectMake(15, 5, 100, 25) textAligment:NSTextAlignmentLeft backgroundColor:[UIColor whiteColor] font:[UIFont secondFont] textColor:[UIColor zh_textColor]];
 //    [headerView addSubview:nameLbl];
 //    nameLbl.centerY = headerView.height/2.0;
-//    nameLbl.text = @"公司封面";
+//    nameLbl.text = @"店铺封面";
 //    //    self.coverHintLbl = nameLbl;
 //
 //    //

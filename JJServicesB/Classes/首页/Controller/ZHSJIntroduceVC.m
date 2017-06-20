@@ -29,7 +29,7 @@
     TLNetworking *http = [TLNetworking new];
     http.showView = self.view;
     http.code = @"807717";
-    http.parameters[@"ckey"] = @"new_start";
+    http.parameters[@"ckey"] = @"guide";
     http.parameters[@"token"] = [ZHUser user].token;
     [http postWithSuccess:^(id responseObject) {
         

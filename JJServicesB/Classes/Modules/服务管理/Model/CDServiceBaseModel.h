@@ -28,5 +28,6 @@
 //
 @property (nonatomic, strong) NSString *desc;
 
+- (NSString *)getStatusName;
 
 @end

@@ -33,27 +33,22 @@
     
     self.names= @[@"摄影",@"培训",@"运营"];
     
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:0 target:self action:@selector(cancle)];
+    
+}
+
+- (void)cancle {
+    
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.row == 0) {
-        
-        ShootServicesVC *vc = [ShootServicesVC new];
-        [self.navigationController pushViewController:vc animated:YES];
-        
-    } else if (indexPath.row == 1) {
-    
-        EduServicesVC *vc = [EduServicesVC new];
-        [self.navigationController pushViewController:vc animated:YES];
-    
-    } else if (indexPath.row == 2) {
-    
-        OperationServicesVC *vc = [OperationServicesVC new];
-        [self.navigationController pushViewController:vc animated:YES];
-        
-    
+    if (self.selected) {
+        self.selected(indexPath.row);
     }
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 
 
 }

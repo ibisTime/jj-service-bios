@@ -107,6 +107,8 @@
         lineView.backgroundColor = [UIColor groupTableViewBackgroundColor];
         [self addSubview:lineView];
         
+        self.stateLbl.textColor = [UIColor themeColor];
+        
     }
     
     return self;
