@@ -28,6 +28,15 @@
 
 }
 
+//- (void)hiddenCommon {
+//
+//
+//}
+//
+//- (void)showCommon {
+//
+//}
+
 - (void)viewDidLoad {
 
     [super viewDidLoad];

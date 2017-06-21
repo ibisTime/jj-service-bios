@@ -61,6 +61,8 @@
         return;
     }
     _images = images;
+    
+#pragma mark- 每次更能图片
     [self changeImages];
 
     
@@ -175,9 +177,13 @@
     //保证子视图和图片数量相等
     [self.bgView.subviews enumerateObjectsUsingBlock:^(__kindof ZHPhotoView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         
+        //重新赋值idx
+        obj.index = idx;
+        
         //
         id tempImg = _images[idx];
         if ([tempImg isKindOfClass:[NSString class]]) {
+            
             NSString *url = (NSString *)tempImg;
             [obj.imageView sd_setImageWithURL:[NSURL URLWithString:[url convertThumbnailImageUrl]] placeholderImage:[UIImage imageNamed:@"商铺"]];
         } else {

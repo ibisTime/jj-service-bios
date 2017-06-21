@@ -21,6 +21,7 @@
 #import "ShootServicesVC.h"
 #import "EduServicesVC.h"
 #import "OperationServicesVC.h"
+#import "AppConfig.h"
 
 
 @interface CDServiceMgtVC ()<ZHSegmentViewDelegate>
@@ -84,7 +85,12 @@
 //    switchScrollView.pagingEnabled = YES;
 //    switchScrollView.scrollEnabled = NO;
     
-//    [CDCompany company].gsQualify.qualifyCode = EDU_APTITUDE_KEY;
+    
+    if ([AppConfig config].runEnv == RunEnvDev) {
+        
+        //    [CDCompany company].gsQualify.qualifyCode = EDU_APTITUDE_KEY;
+
+    }
     
     
     //

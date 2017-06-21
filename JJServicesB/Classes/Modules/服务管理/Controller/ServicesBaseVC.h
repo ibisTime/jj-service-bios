@@ -22,6 +22,8 @@
 //
 @property (nonatomic, strong) ZHGoodsDetailEditView *detailEditView;
 
+- (void)hiddenCommon;
+- (void)showCommon;
 
 /**
  子类应复写该方法

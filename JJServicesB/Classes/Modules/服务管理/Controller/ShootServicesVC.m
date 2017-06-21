@@ -99,7 +99,7 @@
         [self.worksUploadView.imageView sd_setImageWithURL:url];
 
         self.isDingZhi = self.shootModel.isDz;
-        if ([self.shootModel.status isEqualToString:@"1"]) {
+        if ([self.shootModel.isDz isEqualToString:@"1"]) {
             
             self.isDingZhiTf.text=  @"是";
             
@@ -119,12 +119,12 @@
 - (void)chooseType {
 
     TypeModel *model = [TypeModel new];
-    model.key = @"是";
-    model.value = @"1";
+    model.key = @"1";
+    model.value = @"是";
     
     TypeModel *noModel = [TypeModel new];
-    noModel.key = @"否";
-    noModel.value = @"0";
+    noModel.key = @"0";
+    noModel.value = @"否";
     
     TypeChooseVC *vc = [[TypeChooseVC alloc] init];
     vc.typeArrays = @[model,noModel];
@@ -132,8 +132,8 @@
     [vc setSelected:^(TypeModel *model){
         
         [self.navigationController popViewControllerAnimated:YES];
-        self.isDingZhiTf.text = model.key;
-        self.isDingZhi = model.value;
+        self.isDingZhiTf.text = model.value;
+        self.isDingZhi = model.key;
         
     }];
     
@@ -185,7 +185,7 @@
     
     
     //加入图片全部上传成功后应该的到的key
-    NSString *coverImgSuccessKey = self.coverImgChanged ? [TLUploadManager imageNameByImage:self.coverImageView.image] : self.shootModel.pic;
+    NSString *coverImgSuccessKey = self.coverImgChanged ? [TLUploadManager imageNameByImage:self.coverImageView.image] : self.shootModel.advPic;
     
     NSString *reusemImgSuccessKey = self.reusemImgChanged ? [TLUploadManager imageNameByImage:self.worksUploadView.imageView.image] : self.shootModel.works;
     NSString *detailImgSuccessKeys = nil;
@@ -432,7 +432,7 @@
     self.sysNumTf.keyboardType = UIKeyboardTypeNumberPad;
 
     
-    self.scpslmTf = [self tfWithFrame:CGRectMake(0, self.sysNumTf.yy, SCREEN_WIDTH, 45) leftTitle:@"栏目" placeholder:@"请输入"];
+    self.scpslmTf = [self tfWithFrame:CGRectMake(0, self.sysNumTf.yy, SCREEN_WIDTH, 45) leftTitle:@"擅长拍摄类目" placeholder:@"请输入"];
     [bgSV addSubview:self.scpslmTf];
     
     //
@@ -614,7 +614,7 @@
 
 - (TLTextField *)tfWithFrame:(CGRect)frame leftTitle:(NSString *)title placeholder:(NSString *)placeholder {
     
-    TLTextField *tf = [[TLTextField alloc] initWithframe:frame leftTitle:title titleWidth:110 placeholder:placeholder];
+    TLTextField *tf = [[TLTextField alloc] initWithframe:frame leftTitle:title titleWidth:120 placeholder:placeholder];
     
     UIView *line = [[UIView alloc] init];
     line.backgroundColor = [UIColor lineColor];

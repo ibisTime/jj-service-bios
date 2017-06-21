@@ -147,7 +147,8 @@
     
     
     //加入图片全部上传成功后应该的到的key
-    NSString *coverImgSuccessKey = self.coverImgChanged ? [TLUploadManager imageNameByImage:self.coverImageView.image] : self.eduModel.pic;
+    NSString *coverImgSuccessKey = self.coverImgChanged ? [TLUploadManager imageNameByImage:self.coverImageView.image] : self.eduModel.advPic;
+    
     NSString *reusemImgSuccessKey = self.reusemImgChanged ? [TLUploadManager imageNameByImage:self.upload1View.imageView.image] : self.eduModel.resume1;
     
      //
@@ -387,8 +388,10 @@
         
         //
         self.lectorNumTf.text = [self.eduModel.lectorNum stringValue];
+        
         self.mtrainNumTf.text = [self.eduModel.mtrainNum stringValue];
         self.mtrainTimesTf.text = [self.eduModel.mtrainTimes stringValue];
+        
         self.courseTf.text=  self.eduModel.course;
         
         
@@ -446,13 +449,13 @@
     [bgSV addSubview:self.courseTf];
     
     //
-    self.mtrainNumTf = [self tfWithFrame:CGRectMake(0, self.courseTf.yy, SCREEN_WIDTH, 45) leftTitle:@"月均培训场次" placeholder:@"请输入"];
+    self.mtrainNumTf = [self tfWithFrame:CGRectMake(0, self.courseTf.yy, SCREEN_WIDTH, 45) leftTitle:@"月均培训人数" placeholder:@"请输入"];
     [bgSV addSubview:self.mtrainNumTf];
     self.mtrainNumTf.keyboardType = UIKeyboardTypeNumberPad;
     
     
     //
-    self.mtrainTimesTf = [self tfWithFrame:CGRectMake(0, self.mtrainNumTf.yy, SCREEN_WIDTH, 45) leftTitle:@"月均培训人数" placeholder:@"请输入"];
+    self.mtrainTimesTf = [self tfWithFrame:CGRectMake(0, self.mtrainNumTf.yy, SCREEN_WIDTH, 45) leftTitle:@"月均培训场次" placeholder:@"请输入"];
     [bgSV addSubview:self.mtrainTimesTf];
     self.mtrainTimesTf.keyboardType = UIKeyboardTypeNumberPad;
     

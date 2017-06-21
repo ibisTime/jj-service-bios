@@ -186,9 +186,11 @@
         
     }
 
+    //
     
     self.shopNameTf.text = company.name;
     
+    //
     if (company.province) {
        
         self.shopAddressTf.text = [NSString stringWithFormat:@"%@%@%@",company.province,company.city,company.area];
@@ -288,6 +290,7 @@
     //
     self.shopNameTf = [self tfWithFrame:CGRectMake(0, headerV.yy + 10, SCREEN_WIDTH, 45) leftTitle:@"店铺名称" placeholder:@"请输入店铺名称"];
     [bgSV addSubview:self.shopNameTf];
+//    self.shopNameTf.
     self.shopNameTf.userInteractionEnabled = NO;
     
     //
@@ -500,7 +503,6 @@
                     dispatch_group_leave(_uploadGroup);
                     if (info.error) {
                         
-                        [TLAlert alertWithHUDText:@"店铺图片上传失败"];
                         return ;
                         
                     }
@@ -542,7 +544,6 @@
                         
                         if (info.error) {
                             
-                            [TLAlert alertWithHUDText:@"店铺图片上传失败"];
                             return ;
                             
                         }
@@ -564,7 +565,7 @@
             
             if (!self.thumbilImageChanged) {
                 
-                thumbilImgSuccessKey = [CDCompany company].pic;
+                thumbilImgSuccessKey = [CDCompany company].advPic;
             }
             
             dispatch_group_t group  = _uploadGroup;
@@ -573,14 +574,19 @@
 
                 [TLProgressHUD dismiss];
                 if (!coverImgSuccessKey) {
+                    [TLAlert alertWithError:@"图片上传失败"];
                     return ;
                 }
                 
                 if (!thumbilImgSuccessKey) {
+                    [TLAlert alertWithError:@"图片上传失败"];
+
                     return ;
                 }
                 
                 if (detailImgsUploadSuccessKeys.count != self.shopDetailView.images.count) {
+                    [TLAlert alertWithError:@"图片上传失败"];
+
                     return;
                 }
                 
@@ -597,7 +603,7 @@
     } else {
         
         
-       [self upLoadImageSuccess:[CDCompany company].slogan thumailImageKey:[CDCompany company].pic detailImageKeys:[CDCompany company].advPic];
+       [self upLoadImageSuccess:[CDCompany company].logo thumailImageKey:[CDCompany company].advPic detailImageKeys:[detailImagUrls componentsJoinedByString:@"||"]];
         
     }
     
@@ -615,6 +621,10 @@
    
    //封面
    http.parameters[@"logo"] = coverImageKey;
+    //
+   http.parameters[@"pic"] = detailImgKeys;
+   http.parameters[@"advPic"] = thumailImageKey; //店铺图片
+    
    http.parameters[@"province"] = self.province;
    http.parameters[@"city"] = self.city;
    http.parameters[@"area"] = self.area;
@@ -622,6 +632,7 @@
     http.parameters[@"longitude"] = self.longitude; //经度
     http.parameters[@"latitude"] = self.latitude; //纬度
     http.parameters[@"mobile"] = self.shopPhoneTf.text; //订购电话
+
     
     [self.guimoModels enumerateObjectsUsingBlock:^(TypeModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([obj.value isEqual:self.scaleTf.text]) {
@@ -631,9 +642,7 @@
         }
     }];
 //    http.parameters[@"name"] = self.shopNameTf.text;
-    //
-    http.parameters[@"pic"] = thumailImageKey;
-    http.parameters[@"advPic"] = detailImgKeys; //店铺图片
+
     http.parameters[@"description"] = self.advTextView.text;
     http.parameters[@"slogan"] = self.advTextView.text; //广告语
     http.parameters[@"registeredCapital"] = self.capitalTf.text; //广告语
@@ -804,8 +813,13 @@
         return NO;
     }
     
-    if (![self.shopPhoneTf.text valid]) {
+    if (![self.shopNameTf.text valid]) {
         [TLAlert alertWithHUDText:@"请填写店铺名称"];
+        return NO;
+    }
+    
+    if (![self.shopPhoneTf.text valid]) {
+        [TLAlert alertWithHUDText:@"请填写联系电话"];
         return NO;
     }
     

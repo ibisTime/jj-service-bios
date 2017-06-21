@@ -7,7 +7,7 @@
 //
 
 #import "OperationServicesVC.h"
-//#import "ZHGoodsDetailEditView.h"
+#import "ZHGoodsDetailEditView.h"
 #import "TypeChooseVC.h"
 #import "TypeModel.h"
 #import "CDImageUpLoadView.h"
@@ -160,6 +160,7 @@
     
     dispatch_group_notify(_group, dispatch_get_main_queue(), ^{
         if (successCount == 3) {
+            
             [self removePlaceholderView];
             [self setUpUI];
             [self initData];
@@ -549,7 +550,7 @@
     
     
     //加入图片全部上传成功后应该的到的key
-    NSString *coverImgSuccessKey = self.coverImgChanged ? [TLUploadManager imageNameByImage:self.coverImageView.image] : self.operationModel.pic;
+    NSString *coverImgSuccessKey = self.coverImgChanged ? [TLUploadManager imageNameByImage:self.coverImageView.image] : self.operationModel.advPic;
     NSString *reusemImgSuccessKey = self.reusemImgChanged ? [TLUploadManager imageNameByImage:self.successCaseUploadView.imageView.image] : self.operationModel.sucCase;
     NSString *detailImgSuccessKeys = nil;
     

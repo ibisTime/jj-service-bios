@@ -169,6 +169,7 @@
     //可以在上一步，修剪图片
     if (self.photosView.images) {
         
+        //每次选择图片，都会对数组进行重新赋值
         NSMutableArray *arr = self.photosView.images;
         [arr addObject:newImage];
         self.photosView.images =  arr;
