@@ -32,8 +32,8 @@
 
 
 @property (nonatomic, strong) CDImageUpLoadView *upload1View;
-//@property (nonatomic, strong) CDImageUpLoadView *upload2View;
-//@property (nonatomic, strong) CDImageUpLoadView *upload3View;
+@property (nonatomic, strong) CDImageUpLoadView *upload2View;
+@property (nonatomic, strong) CDImageUpLoadView *upload3View;
 
 @property (nonatomic, copy) NSString *resum1;
 @property (nonatomic, copy) NSString *resum2;
@@ -43,6 +43,10 @@
 @property (nonatomic, assign) BOOL coverImgChanged;
 @property (nonatomic, assign) BOOL detailImgChanged;
 @property (nonatomic, assign) BOOL reusemImgChanged;
+
+@property (nonatomic, assign) BOOL reusemImg2Changed;
+@property (nonatomic, assign) BOOL reusemImg3Changed;
+
 
 
 @end
@@ -88,7 +92,17 @@
             weakself.upload1View.imageView.image = image;
             weakself.reusemImgChanged = YES;
             
-        } else {
+        } else  if ([sender isEqual:weakself.upload2View.uploadBtn]) {
+            
+            weakself.upload2View.imageView.image = image;
+            weakself.reusemImg2Changed = YES;
+            
+        } else if ([sender isEqual:weakself.upload3View.uploadBtn]) {
+            
+            weakself.upload3View.imageView.image = image;
+            weakself.reusemImg3Changed = YES;
+            
+        } else   {
         
             //封面图上传
             weakself.coverImageView.image = image;
@@ -135,6 +149,13 @@
     //加入图片全部上传成功后应该的到的key
     NSString *coverImgSuccessKey = self.coverImgChanged ? [TLUploadManager imageNameByImage:self.coverImageView.image] : self.eduModel.pic;
     NSString *reusemImgSuccessKey = self.reusemImgChanged ? [TLUploadManager imageNameByImage:self.upload1View.imageView.image] : self.eduModel.resume1;
+    
+     //
+     NSString *reusemImg2SuccessKey = self.reusemImg2Changed ? [TLUploadManager imageNameByImage:self.upload2View.imageView.image] : self.eduModel.resume2;
+     //
+     NSString *reusemImg3SuccessKey = self.reusemImg3Changed ? [TLUploadManager imageNameByImage:self.upload3View.imageView.image] : self.eduModel.resume3;
+    
+    //
     NSString *detailImgSuccessKeys = nil;
         
     //可能要上唇的详情图片
@@ -151,7 +172,7 @@
     detailImgSuccessKeys = [detailImagUrls componentsJoinedByString:@"||"];
 
 
-    if (self.coverImgChanged || self.detailImgChanged || self.reusemImgChanged) {
+    if (self.coverImgChanged || self.detailImgChanged || self.reusemImgChanged || self.reusemImg2Changed || self.reusemImg3Changed) {
        //需要上传图片
         
         NSMutableArray <UIImage *>*imgs = [[NSMutableArray alloc] init];
@@ -172,6 +193,22 @@
 
         }
         
+        //2
+        if (self.reusemImg2Changed) {
+            
+            [imgs addObject:self.upload2View.imageView.image];
+            [imgKeys addObject:reusemImg2SuccessKey];
+        }
+        
+        //3
+        if (self.reusemImg3Changed) {
+            
+            [imgs addObject:self.upload3View.imageView.image];
+            [imgKeys addObject:reusemImg3SuccessKey];
+            
+        }
+        
+        //
         if (self.detailImgChanged) {
             
             [imgs addObjectsFromArray:detailImgs];
@@ -183,7 +220,8 @@
         
         [self uploadImgWithImgs:imgs keys:imgKeys success:^{
             
-            [self uploadServices:coverImgSuccessKey resumImgKey:reusemImgSuccessKey detailImgKeys:detailImgSuccessKeys];
+            //不需要上传图片
+            [self uploadServices:coverImgSuccessKey resumImgKey:reusemImgSuccessKey resumImg2Key:reusemImg2SuccessKey resumImg3Key:reusemImg3SuccessKey  detailImgKeys:detailImgSuccessKeys];
 
             
         }];
@@ -192,11 +230,12 @@
     }
     
     //不需要上传图片
-    [self uploadServices:coverImgSuccessKey resumImgKey:reusemImgSuccessKey detailImgKeys:detailImgSuccessKeys];
+    [self uploadServices:coverImgSuccessKey resumImgKey:reusemImgSuccessKey resumImg2Key:reusemImg2SuccessKey resumImg3Key:reusemImg3SuccessKey  detailImgKeys:detailImgSuccessKeys];
    
 }
 
-- (void)uploadServices:(NSString *)coverImgKey resumImgKey:(NSString *)reusemImgKey detailImgKeys:(NSString *)detailImgKeys {
+- (void)uploadServices:(NSString *)coverImgKey resumImgKey:(NSString *)reusemImgKey
+         resumImg2Key:(NSString *)reusemImg2Key  resumImg3Key:(NSString *)reusemImg3Key  detailImgKeys:(NSString *)detailImgKeys {
 
     TLNetworking *http = [TLNetworking new];
     http.showView = self.view;
@@ -214,8 +253,8 @@
     }
     //
     http.parameters[@"name"] = self.nameTf.text;
-    http.parameters[@"pic"] = coverImgKey;
-    http.parameters[@"advPic"] = detailImgKeys;
+    http.parameters[@"pic"] =  detailImgKeys ;
+    http.parameters[@"advPic"] = coverImgKey;
     http.parameters[@"companyCode"] = [CDCompany company].code;
     http.parameters[@"quoteMin"] = [self.quoteMinTf.text convertToSysMoney];
     http.parameters[@"quoteMax"] = [self.quoteMaxTf.text convertToSysMoney];
@@ -231,14 +270,15 @@
     
     //
     http.parameters[@"resume1"] = reusemImgKey;
-    http.parameters[@"resume2"] = @"无";
-    http.parameters[@"resume3"] = @"无";
+    http.parameters[@"resume2"] = reusemImg2Key;
+    http.parameters[@"resume3"] = reusemImg3Key;
     
     
     
     [http postWithSuccess:^(id responseObject) {
         
         [self.navigationController popViewControllerAnimated:YES];
+        [TLAlert alertWithSucces:@"提交成功"];
         if (self.success) {
             self.success();
         }
@@ -333,17 +373,24 @@
         self.quoteMaxTf.text = [self.eduModel.quoteMax convertToRealMoney];
         self.quoteMinTf.text = [self.eduModel.quoteMin convertToRealMoney];
         
-        [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:[self.eduModel.pic convertThumbnailImageUrl]]];
+        [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:[self.eduModel.advPic convertThumbnailImageUrl]]];
         self.detailEditView.images =  self.eduModel.detailPics.mutableCopy;
 //        self.detailEditView.images =  self.eduModel.detailPics.mutableCopy;
 
         self.detailEditView.detailTextView.text = self.eduModel.desc;
-       [self.upload1View.imageView sd_setImageWithURL:[NSURL URLWithString:[self.eduModel.resume1 convertThumbnailImageUrl]]];
+        [self.upload1View.imageView sd_setImageWithURL:[NSURL URLWithString:[self.eduModel.resume1 convertThumbnailImageUrl]]];
         
-        self.lectorNumTf.text = [@1 stringValue];
-        self.mtrainNumTf.text = [@1 stringValue];
-        self.mtrainTimesTf.text = [@3 stringValue];
-        self.courseTf.text=  @"课程";
+        //
+        [self.upload2View.imageView sd_setImageWithURL:[NSURL URLWithString:[self.eduModel.resume2 convertThumbnailImageUrl]]];
+        //
+        [self.upload3View.imageView sd_setImageWithURL:[NSURL URLWithString:[self.eduModel.resume3 convertThumbnailImageUrl]]];
+        
+        //
+        self.lectorNumTf.text = [self.eduModel.lectorNum stringValue];
+        self.mtrainNumTf.text = [self.eduModel.mtrainNum stringValue];
+        self.mtrainTimesTf.text = [self.eduModel.mtrainTimes stringValue];
+        self.courseTf.text=  self.eduModel.course;
+        
         
     } else {
     
@@ -395,40 +442,43 @@
     self.lectorNumTf.keyboardType = UIKeyboardTypeNumberPad;
 
     //
-    self.mtrainNumTf = [self tfWithFrame:CGRectMake(0, self.lectorNumTf.yy, SCREEN_WIDTH, 45) leftTitle:@"月均场次" placeholder:@"请输入"];
+    self.courseTf = [self tfWithFrame:CGRectMake(0, self.lectorNumTf.yy, SCREEN_WIDTH, 45) leftTitle:@"培训课程" placeholder:@"请输入"];
+    [bgSV addSubview:self.courseTf];
+    
+    //
+    self.mtrainNumTf = [self tfWithFrame:CGRectMake(0, self.courseTf.yy, SCREEN_WIDTH, 45) leftTitle:@"月均培训场次" placeholder:@"请输入"];
     [bgSV addSubview:self.mtrainNumTf];
     self.mtrainNumTf.keyboardType = UIKeyboardTypeNumberPad;
     
     
     //
-    self.mtrainTimesTf = [self tfWithFrame:CGRectMake(0, self.mtrainNumTf.yy, SCREEN_WIDTH, 45) leftTitle:@"月均人数" placeholder:@"请输入"];
+    self.mtrainTimesTf = [self tfWithFrame:CGRectMake(0, self.mtrainNumTf.yy, SCREEN_WIDTH, 45) leftTitle:@"月均培训人数" placeholder:@"请输入"];
     [bgSV addSubview:self.mtrainTimesTf];
     self.mtrainTimesTf.keyboardType = UIKeyboardTypeNumberPad;
     
-    //
-    self.courseTf = [self tfWithFrame:CGRectMake(0, self.mtrainTimesTf.yy, SCREEN_WIDTH, 45) leftTitle:@"课程" placeholder:@"请输入"];
-    [bgSV addSubview:self.courseTf];
+  
     
     //
-    self.upload1View = [[CDImageUpLoadView alloc] initWithFrame:CGRectMake(0,  self.courseTf.yy + 0.5, SCREEN_WIDTH, 80)];
+    self.upload1View = [[CDImageUpLoadView alloc] initWithFrame:CGRectMake(0,  self.mtrainTimesTf.yy + 0.5, SCREEN_WIDTH, 80)];
     [bgSV addSubview:self.upload1View];
-    self.upload1View.titleLbl.text = @"核心讲师简历";
+    self.upload1View.titleLbl.text = @"核心讲师简历1";
     [self.upload1View.uploadBtn addTarget:self action:@selector(selectImg:) forControlEvents:UIControlEventTouchUpInside];
     
     //
-//    self.upload2View = [[CDImageUpLoadView alloc] initWithFrame:CGRectMake(0,  self.upload1View.yy + 0.5, SCREEN_WIDTH, 80)];
-//    [bgSV addSubview:self.upload2View];
-//    self.upload2View.titleLbl.text = @"核心讲师简历2";
-//    [self.upload2View.uploadBtn addTarget:self action:@selector(chooseResume:) forControlEvents:UIControlEventTouchUpInside];
-//    
-//    //
-//    self.upload3View = [[CDImageUpLoadView alloc] initWithFrame:CGRectMake(0,  self.upload2View.yy + 0.5, SCREEN_WIDTH, 80)];
-//    [bgSV addSubview:self.upload3View];
-//    self.upload3View.titleLbl.text = @"核心讲师简历3";
-//    [self.upload3View.uploadBtn addTarget:self action:@selector(chooseResume:) forControlEvents:UIControlEventTouchUpInside];
+    self.upload2View = [[CDImageUpLoadView alloc] initWithFrame:CGRectMake(0,  self.upload1View.yy + 0.5, SCREEN_WIDTH, 80)];
+    [bgSV addSubview:self.upload2View];
+    self.upload2View.titleLbl.text = @"核心讲师简历2";
+    [self.upload2View.uploadBtn addTarget:self action:@selector(selectImg:) forControlEvents:UIControlEventTouchUpInside];
     
+    //
+    self.upload3View = [[CDImageUpLoadView alloc] initWithFrame:CGRectMake(0,  self.upload2View.yy + 0.5, SCREEN_WIDTH, 80)];
+    [bgSV addSubview:self.upload3View];
+    self.upload3View.titleLbl.text = @"核心讲师简历3";
+    [self.upload3View.uploadBtn addTarget:self action:@selector(selectImg:) forControlEvents:UIControlEventTouchUpInside];
+    
+    ///////////////////////////////////////////////////---///////////////
     //简介
-    self.detailEditView.y = self.upload1View.yy + 10;
+    self.detailEditView.y = self.upload3View.yy + 10;
     
     //
     UIButton *confirmBtn = [UIButton zhBtnWithFrame:CGRectMake(20, self.detailEditView.yy + 30, SCREEN_WIDTH - 40, 45) title:@"确认"];
@@ -524,9 +574,23 @@
     
     if (!self.upload1View.imageView.image) {
         
-        [TLAlert alertWithInfo:@"请上传简历"];
+        [TLAlert alertWithInfo:@"请上传简历1"];
         return NO;
     }
+    
+    if (!self.upload2View.imageView.image) {
+        
+        [TLAlert alertWithInfo:@"请上传简历2"];
+        return NO;
+    }
+    
+    if (!self.upload3View.imageView.image) {
+        
+        [TLAlert alertWithInfo:@"请上传简历3"];
+        return NO;
+    }
+    
+    
     
     return YES;
     
@@ -534,7 +598,7 @@
 
 - (TLTextField *)tfWithFrame:(CGRect)frame leftTitle:(NSString *)title placeholder:(NSString *)placeholder {
     
-    TLTextField *tf = [[TLTextField alloc] initWithframe:frame leftTitle:title titleWidth:110 placeholder:placeholder];
+    TLTextField *tf = [[TLTextField alloc] initWithframe:frame leftTitle:title titleWidth:120 placeholder:placeholder];
     
     UIView *line = [[UIView alloc] init];
     line.backgroundColor = [UIColor lineColor];

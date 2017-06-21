@@ -314,7 +314,7 @@
     [http postWithSuccess:^(id responseObject) {
         
         [[ZHUser user] saveUserInfo:responseObject[@"data"] token:[ZHUser user].token userId:[ZHUser user].userId];
-        [[ZHUser user] setUserInfoWithDict:responseObject[@"data"]];
+//        [[ZHUser user] setUserInfoWithDict:responseObject[@"data"]];
         
     } failure:^(NSError *error) {
         
@@ -340,7 +340,7 @@
         
     });
     
-//    [self getAccountInfo]; //获取账户信息
+//  [self getAccountInfo]; //获取账户信息
     [self userInfoChange]; //用户信息变更
     
 
@@ -437,7 +437,7 @@
     self.nameLbl = nameLbl;
     
     //头像
-    UIButton *photoBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, nameLbl.yy + 12*SCREEN_SCALE, 60*SCREEN_SCALE, 60*SCREEN_SCALE)];
+    UIButton *photoBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, nameLbl.yy + 12*SCREEN_SCALE + 20, 60*SCREEN_SCALE, 60*SCREEN_SCALE)];
     photoBtn.centerX = SCREEN_WIDTH/2.0;
     photoBtn.layer.cornerRadius = photoBtn.height / 2.0;
     photoBtn.layer.borderWidth = 2;
@@ -449,7 +449,7 @@
     [photoBtn setBackgroundImage:[UIImage imageNamed:@"头像占位图"] forState:UIControlStateNormal];
     
     //
-    self.aptitudeNameLbl = [UILabel labelWithFrame:CGRectMake(0, photoBtn.yy + 10, SCREEN_WIDTH, 25)
+    self.aptitudeNameLbl = [UILabel labelWithFrame:CGRectMake(0, photoBtn.yy + 20, SCREEN_WIDTH, 25)
                                       textAligment:NSTextAlignmentCenter
                                    backgroundColor:[UIColor clearColor]
                                               font:[UIFont systemFontOfSize:20*SCREEN_SCALE]

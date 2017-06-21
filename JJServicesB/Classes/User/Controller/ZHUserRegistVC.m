@@ -110,7 +110,6 @@
                 [ZHUser user].userId = userId;
                 [ZHUser user].token = tokenId;
                 [[ZHUser user] saveUserInfo:userInfo token:tokenId userId:userId];
-                [[ZHUser user] setUserInfoWithDict:userInfo];
                 [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoginNotification object:nil];
                 
              

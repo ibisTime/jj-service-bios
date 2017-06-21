@@ -41,10 +41,14 @@ NSString *const kUserInfoChange = @"kUserInfoChange_zh";
     [[NSUserDefaults standardUserDefaults] setObject:userInfo forKey:USER_INFO_DICT_KEY];
     
     if (userId && token) {
-        
+
         [[NSUserDefaults standardUserDefaults] setObject:userId forKey:USER_ID_KEY];
         [[NSUserDefaults standardUserDefaults] setObject:token forKey:TOKEN_ID_KEY];
         
+        [ZHUser user].userId = userId;
+        [ZHUser user].token = token;
+        [[ZHUser user] setUserInfoWithDict:userInfo];
+
     } else {
     
         NSLog(@"请传入用户信息");

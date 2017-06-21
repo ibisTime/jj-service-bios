@@ -29,7 +29,7 @@
 
 - (NSArray<NSString *> *)detailPics {
     
-    return [self.advPic componentsSeparatedByString:@"||"];
+    return [self.pic componentsSeparatedByString:@"||"];
 }
 
 @end

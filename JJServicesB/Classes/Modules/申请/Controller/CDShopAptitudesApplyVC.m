@@ -26,6 +26,13 @@
 @property (nonatomic, copy) NSArray <CDCompanyAptitudeModel *>*aptitudeModles;
 @property (nonatomic, strong) CDCompanyAptitudeModel *currentAptitudeModel;
 
+@property (nonatomic, strong) UILabel *descLbl;
+
+@property (nonatomic, strong) UIButton *confirmBtn;
+
+@property (nonatomic, strong) UIView *contentV;
+
+@property (nonatomic, strong) UIScrollView *bgSV;
 
 @end
 
@@ -135,8 +142,59 @@
         self.currentAptitudeModel = self.aptitudeModles[idx];
         self.aptitudeChooseTf.text = self.currentAptitudeModel.name;
         
+        if (self.contentV) {
+            [self.contentV removeFromSuperview];
+        }
+        
+        self.contentV = [self content:self.currentAptitudeModel.desc];
+        [self.bgSV addSubview:self.contentV];
+        
+        self.contentV.y = self.aptitudeChooseTf.yy;
+        self.sloganTf.y = self.contentV.yy + 10;
+        self.zoneTf.y = self.sloganTf.yy;
+        
+        self.confirmBtn.y = self.zoneTf.yy  + 60;
+        
     }];
     
+    
+}
+
+
+- (UIView *)content:(NSString *)content {
+
+        UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 0)];
+        bgView.backgroundColor = [UIColor whiteColor];
+    self.contentV = bgView;
+    
+        UILabel *lbl = [UILabel labelWithFrame:CGRectZero
+                                  textAligment:NSTextAlignmentLeft
+                               backgroundColor:[UIColor whiteColor]
+                                          font:FONT(15)
+                                     textColor:[UIColor textColor]];
+        [bgView addSubview:lbl];
+        lbl.text = @"资质简介";
+    [lbl mas_makeConstraints:^(MASConstraintMaker *make) {
+        
+        make.left.equalTo(bgView.mas_left).offset(15);
+        make.centerY.equalTo(bgView.mas_centerY);
+        
+    }];
+    
+    
+     UILabel *contentLbl = [UILabel labelWithFrame:CGRectMake(100, 15, SCREEN_WIDTH - 100 - 15, 45)
+                                  textAligment:NSTextAlignmentLeft
+                               backgroundColor:[UIColor whiteColor]
+                                          font:FONT(15)
+                                     textColor:[UIColor textColor]];
+        [bgView addSubview:contentLbl];
+        contentLbl.numberOfLines = 0;
+    
+       contentLbl.text = content;
+       CGSize size  = [contentLbl sizeThatFits:CGSizeMake(contentLbl.width, MAXFLOAT)];
+    contentLbl.height = size.height;
+    bgView.height = size.height + 30;
+        return bgView;
     
 }
 
@@ -205,6 +263,7 @@
 
     UIScrollView *bgSV = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 64)];
     [self.view addSubview:bgSV];
+    self.bgSV = bgSV;
     
     //
     CGFloat h = 45;
@@ -222,6 +281,34 @@
     [bgSV addSubview:maskCtrl];
     [maskCtrl addTarget:self action:@selector(chooseAptitude) forControlEvents:UIControlEventTouchUpInside];
     
+    //资质简介
+
+    
+    
+//    [bgView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        
+//        make.width.mas_equalTo(SCREEN_WIDTH);
+//        make.left.equalTo(bgSV.mas_left);
+//        make.top.equalTo(self.aptitudeChooseTf.mas_bottom);
+////        make.bottom.equalTo(contentLbl.mas_bottom);
+//        
+//    }];
+//    
+//    [lbl mas_makeConstraints:^(MASConstraintMaker *make) {
+//        
+//        make.left.equalTo(bgView.mas_left).offset(15);
+//        make.centerY.equalTo(bgView.mas_centerY);
+//        
+//    }];
+//    
+//    [contentLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+//        
+//        make.left.equalTo(bgView.mas_left).offset(100);
+//        make.top.equalTo(bgView.mas_top).offset(10);
+//        make.right.equalTo(bgView.mas_right).offset(-15);
+//        
+//    }];
+    
     
     //
     self.sloganTf = [self tfWithFrame:CGRectMake(0, self.aptitudeChooseTf.yy + 10, SCREEN_WIDTH, h) leftTitle:@"广告语"];
@@ -234,11 +321,29 @@
     [bgSV addSubview:self.zoneTf];
     self.zoneTf.placeholder = @"请输入报价区间";
     
+//    [self.zoneTf mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.equalTo(bgSV.mas_left);
+//        make.width.mas_equalTo(SCREEN_WIDTH);
+//        make.height.mas_equalTo(h);
+//        
+//        make.top.equalTo(self.sloganTf.mas_bottom);
+//        
+//    }];
+    
     //
     UIButton *confirmBtn = [UIButton zhBtnWithFrame:CGRectMake(30,self.zoneTf.yy +  60,SCREEN_WIDTH - 60, 45) title:@"确定"];
     [bgSV addSubview:confirmBtn];
     [confirmBtn addTarget:self action:@selector(confirm) forControlEvents:UIControlEventTouchUpInside];
-
+    self.confirmBtn = confirmBtn;
+//    [confirmBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.equalTo(bgSV.mas_left).offset(30);
+//        make.width.mas_equalTo(SCREEN_WIDTH - 60);
+//        make.height.mas_equalTo(45);
+//    
+//        make.top.equalTo(self.zoneTf.mas_bottom).offset(60);
+//        
+//    }];
+    
 }
 
 

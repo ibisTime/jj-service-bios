@@ -46,7 +46,7 @@
     
     self.isFirst = YES;
 //    self.models = [NSMutableArray array];
-    
+    self.title  = @"意向处理";
     
     //普通商品
     TLTableView *goodsTableView = [TLTableView tableViewWithframe:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 64) delegate:self dataSource:self];

@@ -120,14 +120,7 @@
           [TLProgressHUD dismiss];
       }
       
-      if ([responseObject[@"errorCode"] isEqual:@"4"]) {
-          //token错误  4
   
-          [TLAlert alertWithTitile:nil message:@"为了您的账户安全，请重新登录" confirmAction:^{
-              [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoginOutNotification object:nil];
-          }];
-          return;
-      }
       
       if([responseObject[@"errorCode"] isEqual:@"0"]){ //成功
           
@@ -135,14 +128,29 @@
               success(responseObject);
           }
           
-      } else if(self.isShowMsg) { //异常也是失败
+      } else { //异常也是失败
           
-          if(failure){
+          if(failure) {
 
               failure(nil);
+              
           }
           
-          [TLAlert alertWithInfo:responseObject[@"errorInfo"]];
+          if(self.isShowMsg) {
+          
+              [TLAlert alertWithInfo:responseObject[@"errorInfo"]];
+
+          }
+          
+          //
+          if ([responseObject[@"errorCode"] isEqual:@"4"]) {
+              
+              [TLAlert alertWithTitile:nil message:@"为了您的账户安全，请重新登录" confirmAction:^{
+                  [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoginOutNotification object:nil];
+              }];
+              return;
+          }
+          
       }
     
        

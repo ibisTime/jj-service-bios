@@ -71,12 +71,10 @@ void TLLog(NSString *format, ...) {
             
              self.qiniuDomain = @"http://oru1eha7u.bkt.clouddn.com";
             
-            
-            
 //            self.chatKey = @"1139170317178872#zhpay";
             self.addr = @"http://121.43.101.148:8901";
 //            self.shareBaseUrl = @"http://osszhqb.hichengdai.com/share";
-
+           
         } break;
             
     }

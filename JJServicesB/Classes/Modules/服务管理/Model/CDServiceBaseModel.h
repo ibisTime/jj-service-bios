@@ -28,6 +28,9 @@
 //
 @property (nonatomic, strong) NSString *desc;
 
+@property (nonatomic, copy) NSString *dealNote;
+
+
 - (NSString *)getStatusName;
 
 @end

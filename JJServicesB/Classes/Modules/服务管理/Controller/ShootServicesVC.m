@@ -88,7 +88,7 @@
         self.quoteMaxTf.text = [NSString stringWithFormat:@"%@",[self.shootModel.quoteMax convertToRealMoney]];
         self.quoteMinTf.text = [NSString stringWithFormat:@"%@",[self.shootModel.quoteMin convertToRealMoney]];
         
-        [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:[self.shootModel.pic convertThumbnailImageUrl]]];
+        [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:[self.shootModel.advPic convertThumbnailImageUrl]]];
         self.detailEditView.images =  self.shootModel.detailPics.mutableCopy;
         self.detailEditView.detailTextView.text = self.shootModel.desc;
         
@@ -266,8 +266,9 @@
         
     }
     http.parameters[@"name"] = self.nameTf.text;
-    http.parameters[@"pic"] = coverImgKey;
-    http.parameters[@"advPic"] = detailImgKeys;
+    http.parameters[@"pic"] =  detailImgKeys;
+    
+    http.parameters[@"advPic"] = coverImgKey;
     http.parameters[@"companyCode"] = [CDCompany company].code;
     http.parameters[@"quoteMin"] = [self.quoteMinTf.text convertToSysMoney];
     http.parameters[@"quoteMax"] = [self.quoteMaxTf.text convertToSysMoney];

@@ -38,7 +38,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //
+    
     //普通商品
     TLTableView *goodsTableView = [TLTableView tableViewWithframe:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 64) delegate:self dataSource:self];
     [self.view addSubview:goodsTableView];
@@ -233,10 +233,15 @@
     
     CDServiceBaseModel *model = self.models[indexPath.row];
     
-    [cell.coverImageView sd_setImageWithURL:[NSURL URLWithString:[model.pic convertThumbnailImageUrl]]];
+    [cell.coverImageView sd_setImageWithURL:[NSURL URLWithString:[model.advPic convertThumbnailImageUrl]]];
     cell.mainTextLbl.text = model.name;
-    cell.subTextLbl.text = [NSString stringWithFormat:@"%@-%@",[model.quoteMin convertToRealMoney],[model.quoteMax convertToRealMoney]];
+    cell.subTextLbl.text = [NSString stringWithFormat:@"报价：%@-%@",[model.quoteMin convertToRealMoney],[model.quoteMax convertToRealMoney]];
     cell.stateLbl.text = [model getStatusName];
+    if (model.dealNote) {
+        
+        cell.timeLbl.text = [NSString stringWithFormat:@"违规原因：%@",model.dealNote];
+
+    }
     return cell;
     
 }

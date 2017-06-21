@@ -59,14 +59,14 @@
 - (void)updateUserInfo;
 
 /**
- 存储都磁盘
+ 存储都磁盘, 并更新用户信息
  */
 - (void)saveUserInfo:(NSDictionary *)userInfo token:(NSString *)token userId:(NSString *)userId;
 
 /**
  赋值
  */
-- (void)setUserInfoWithDict:(NSDictionary *)dict;
+//- (void)setUserInfoWithDict:(NSDictionary *)dict;
 
 
 @end

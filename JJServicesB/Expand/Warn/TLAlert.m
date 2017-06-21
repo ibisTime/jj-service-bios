@@ -7,7 +7,7 @@
 //
 
 #import "TLAlert.h"
-#import "MBProgressHUD.h"
+//#import "MBProgressHUD.h"
 
 @implementation TLAlert
 
@@ -60,29 +60,29 @@
 
 }
 
-+ (void)alertWithHUDText:(NSString *)text duration:(NSTimeInterval)sec complection:(void(^)())complection {
-
-    UIWindow *window = [UIApplication sharedApplication].keyWindow;
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:window animated:YES];
-    //    hud.bezelView.backgroundColor = [UIColor blackColor];
-    //    hud.bezelView.color = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    hud.animationType = MBProgressHUDAnimationZoomOut;
-    //    hud.bezelView.style =  MBProgressHUDBackgroundStyleSolidColor;
-    hud.mode = MBProgressHUDModeText;
-    hud.label.text = text;
-    //    hud.label.textColor = [UIColor whiteColor];
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(sec * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [hud hideAnimated:YES];
-        if (complection) {
-            complection();
-        }
-    });
-    
-//    return nil;
-
-
-}
+//+ (void)alertWithHUDText:(NSString *)text duration:(NSTimeInterval)sec complection:(void(^)())complection {
+//
+//    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+//    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:window animated:YES];
+//    //    hud.bezelView.backgroundColor = [UIColor blackColor];
+//    //    hud.bezelView.color = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    hud.animationType = MBProgressHUDAnimationZoomOut;
+//    //    hud.bezelView.style =  MBProgressHUDBackgroundStyleSolidColor;
+//    hud.mode = MBProgressHUDModeText;
+//    hud.label.text = text;
+//    //    hud.label.textColor = [UIColor whiteColor];
+//    
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(sec * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [hud hideAnimated:YES];
+//        if (complection) {
+//            complection();
+//        }
+//    });
+//    
+////    return nil;
+//
+//
+//}
 
 
 #pragma mark- 基于系统的alertController

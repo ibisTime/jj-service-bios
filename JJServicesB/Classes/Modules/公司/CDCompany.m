@@ -187,7 +187,7 @@
 
 - (NSArray<NSString *> *)detailPics {
     
-    return [self.advPic componentsSeparatedByString:@"||"];
+    return [self.pic componentsSeparatedByString:@"||"];
 }
 
 - (void)changCompanyInfoWithDict:(NSDictionary *)dict {
@@ -240,17 +240,10 @@
 }
 
 
-//- (void)setValue:(id)value forUndefinedKey:(NSString *)key {
-//    
-//    NSLog(@"%@ %@",key,value);
-//    if ([key isEqualToString:@"qualify"]) {
-//        
-////        CDCompanyAptitudeModel *model = [CDCompanyAptitudeModel tl_objectWithDictionary:value];
-////        self.qualify = model;
-//        
-//    }
-//    
-//    
-//}
+- (void)setValue:(id)value forUndefinedKey:(NSString *)key {
+    
+    NSLog(@"%@ %@",key,value);
+    
+}
 
 @end

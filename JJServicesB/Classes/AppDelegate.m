@@ -34,15 +34,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-
-//    tgfw(必填)	提供服务	A 运营 B 推广 C 拍摄 D 美工 E 客服 F 仓储 G 打包发货
-    
-    
-    //
     //配置环境
     [AppConfig config].runEnv = RunEnvDev;
-    
-    
     
     //
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];

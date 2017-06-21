@@ -5,7 +5,7 @@ target 'JJServicesB' do
   pod 'MJRefresh'
   pod 'MJExtension'
   pod 'Masonry'
-  pod 'MBProgressHUD'
+#  pod 'MBProgressHUD'
   pod 'SVProgressHUD'
   pod 'AFNetworking'
   pod 'SDWebImage'

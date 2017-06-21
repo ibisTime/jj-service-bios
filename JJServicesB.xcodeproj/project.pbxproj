@@ -16,7 +16,6 @@
 		2EAEAF181EF230F10005EC88 /* TLBaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAEAEC51EF230F10005EC88 /* TLBaseModel.m */; };
 		2EAEAF191EF230F10005EC88 /* TLBaseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAEAEC81EF230F10005EC88 /* TLBaseVC.m */; };
 		2EAEAF1A1EF230F10005EC88 /* UICKeyChainStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAEAED01EF230F10005EC88 /* UICKeyChainStore.m */; };
-		2EAEAF1B1EF230F10005EC88 /* MBProgressHUD+add.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAEAED21EF230F10005EC88 /* MBProgressHUD+add.m */; };
 		2EAEAF1C1EF230F10005EC88 /* NSNumber+TLAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAEAED41EF230F10005EC88 /* NSNumber+TLAdd.m */; };
 		2EAEAF1D1EF230F10005EC88 /* NSObject+convert.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAEAED61EF230F10005EC88 /* NSObject+convert.m */; };
 		2EAEAF1E1EF230F10005EC88 /* NSString+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAEAED81EF230F10005EC88 /* NSString+Extension.m */; };
@@ -137,8 +136,6 @@
 		2EAEAEC81EF230F10005EC88 /* TLBaseVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLBaseVC.m; sourceTree = "<group>"; };
 		2EAEAECF1EF230F10005EC88 /* UICKeyChainStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICKeyChainStore.h; sourceTree = "<group>"; };
 		2EAEAED01EF230F10005EC88 /* UICKeyChainStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UICKeyChainStore.m; sourceTree = "<group>"; };
-		2EAEAED11EF230F10005EC88 /* MBProgressHUD+add.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MBProgressHUD+add.h"; sourceTree = "<group>"; };
-		2EAEAED21EF230F10005EC88 /* MBProgressHUD+add.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MBProgressHUD+add.m"; sourceTree = "<group>"; };
 		2EAEAED31EF230F10005EC88 /* NSNumber+TLAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNumber+TLAdd.h"; sourceTree = "<group>"; };
 		2EAEAED41EF230F10005EC88 /* NSNumber+TLAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumber+TLAdd.m"; sourceTree = "<group>"; };
 		2EAEAED51EF230F10005EC88 /* NSObject+convert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+convert.h"; sourceTree = "<group>"; };
@@ -468,8 +465,6 @@
 			isa = PBXGroup;
 			children = (
 				2EAEAECA1EF230F10005EC88 /* 3rd */,
-				2EAEAED11EF230F10005EC88 /* MBProgressHUD+add.h */,
-				2EAEAED21EF230F10005EC88 /* MBProgressHUD+add.m */,
 				2EAEAED31EF230F10005EC88 /* NSNumber+TLAdd.h */,
 				2EAEAED41EF230F10005EC88 /* NSNumber+TLAdd.m */,
 				2EAEAED51EF230F10005EC88 /* NSObject+convert.h */,
@@ -1314,7 +1309,6 @@
 				2EAEB00C1EF67E190005EC88 /* ZHMsgCell.m in Sources */,
 				2EF823B31EF7A4280017EDC1 /* CDUIServicesVC.m in Sources */,
 				2EAEAF361EF230F10005EC88 /* TLTextView.m in Sources */,
-				2EAEAF1B1EF230F10005EC88 /* MBProgressHUD+add.m in Sources */,
 				2EAEAF321EF230F10005EC88 /* TLPickerTextField.m in Sources */,
 				2EAEB00A1EF67E190005EC88 /* ZHMsg.m in Sources */,
 				2EAEAF611EF232520005EC88 /* AddressPickerView.m in Sources */,

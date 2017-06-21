@@ -25,6 +25,7 @@
 
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *slogan;
+@property (nonatomic, copy) NSString *desc;
 
 
 

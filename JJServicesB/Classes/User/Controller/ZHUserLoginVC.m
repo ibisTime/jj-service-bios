@@ -125,7 +125,6 @@
          NSDictionary *userInfo = responseObject[@"data"];
          //
          [[ZHUser user] saveUserInfo:userInfo token:token userId:userId];
-         [[ZHUser user] setUserInfoWithDict:userInfo];
             
          //
          [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoginNotification object:nil];

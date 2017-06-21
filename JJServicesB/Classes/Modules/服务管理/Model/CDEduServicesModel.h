@@ -19,6 +19,4 @@
 @property (nonatomic, copy) NSString *resume3;
 @property (nonatomic, copy) NSString *course;
 
-
-
 @end

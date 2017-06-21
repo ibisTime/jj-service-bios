@@ -1,4 +1,4 @@
-//
+    //
 //  ZHGoodsListVC.m
 //  ZHBusiness
 //
@@ -84,7 +84,10 @@
 //    switchScrollView.pagingEnabled = YES;
 //    switchScrollView.scrollEnabled = NO;
     
+//    [CDCompany company].gsQualify.qualifyCode = EDU_APTITUDE_KEY;
     
+    
+    //
     if ([[CDCompany company].gsQualify.qualifyCode isEqualToString:SHOOT_APTITUDE_KEY]) {
         
         //摄影

@@ -34,7 +34,7 @@
 @property (nonatomic, strong) TLTextView *advTextView;
 
 
-
+@property (nonatomic, strong) TLTextField *peopleNameTf;
 @property (nonatomic,strong) TLTextField *rateTf;
 @property (nonatomic,strong) TLTextField *locationDetailAddressTf;
 @property (nonatomic, strong) TLTextField *scaleTf;
@@ -221,9 +221,10 @@
     
     //
     self.shopPhoneTf.text = company.mobile;
+    self.peopleNameTf.text = company.corporation;
     
-    NSString *thumailStr = [company.pic convertThumbnailImageUrl];
-    [self.thumailImageUpLoadView.imageView sd_setImageWithURL:[NSURL URLWithString:thumailStr]];
+    NSString *thumailStr = [company.advPic convertThumbnailImageUrl];
+    [self.thumailImageUpLoadView.imageView sd_setImageWithURL:[NSURL URLWithString:thumailStr] placeholderImage:[UIImage imageNamed:@"商铺"]];
     
     //
     self.capitalTf.text = company.registeredCapital;
@@ -317,9 +318,15 @@
     [jwdbtn addTarget:self action:@selector(goMap) forControlEvents:UIControlEventTouchUpInside];
     
    
+    
+    self.peopleNameTf
+    = [self tfWithFrame:CGRectMake(0, self.locationDetailAddressTf.yy , SCREEN_WIDTH, 45) leftTitle:@"法人姓名" placeholder:@"请输入法人姓名"];
+    [bgSV addSubview:self.peopleNameTf];
+    self.peopleNameTf.userInteractionEnabled = NO;
+    
     //电话
     self.shopPhoneTf
-         = [self tfWithFrame:CGRectMake(0, self.locationDetailAddressTf.yy , SCREEN_WIDTH, 45) leftTitle:@"联系电话" placeholder:@"请输入联系电话"];
+         = [self tfWithFrame:CGRectMake(0, self.peopleNameTf.yy , SCREEN_WIDTH, 45) leftTitle:@"联系电话" placeholder:@"请输入联系电话"];
     [bgSV addSubview:self.shopPhoneTf];
     self.shopPhoneTf.keyboardType = UIKeyboardTypeNumberPad;
     
@@ -337,13 +344,13 @@
 
     //
     self.capitalTf
-    = [self tfWithFrame:CGRectMake(0, self.scaleTf.yy + 0.5, SCREEN_WIDTH, 45) leftTitle:@"注册资本" placeholder:@"请输入注册资本"];
+    = [self tfWithFrame:CGRectMake(0, self.scaleTf.yy + 0.5, SCREEN_WIDTH, 45) leftTitle:@"注册资本(万)" placeholder:@"请输入注册资本"];
     [bgSV addSubview:self.capitalTf];
     self.capitalTf.keyboardType = UIKeyboardTypeNumberPad;
     
     //时间
     self.birthTf
-    = [self tfWithFrame:CGRectMake(0, self.capitalTf.yy , SCREEN_WIDTH, 45) leftTitle:@"成立年限" placeholder:@"请输入成立年限"];
+    = [self tfWithFrame:CGRectMake(0, self.capitalTf.yy , SCREEN_WIDTH, 45) leftTitle:@"成立年限(年)" placeholder:@"请输入成立年限"];
     [bgSV addSubview:self.birthTf];
     self.birthTf.keyboardType = UIKeyboardTypeDecimalPad;
     
@@ -475,8 +482,8 @@
         getUploadToken.parameters[@"token"] = [ZHUser user].token;
         [getUploadToken postWithSuccess:^(id responseObject) {
             
-            [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            
+
+            [TLProgressHUD showWithStatus:nil];
             
             
             QNUploadManager *uploadManager = [TLUploadManager qnUploadManager];
@@ -563,8 +570,8 @@
             dispatch_group_t group  = _uploadGroup;
             dispatch_group_notify(group, dispatch_get_main_queue(), ^{
                 
-                [MBProgressHUD hideHUDForView:self.view animated:YES];
-                
+
+                [TLProgressHUD dismiss];
                 if (!coverImgSuccessKey) {
                     return ;
                 }
@@ -623,7 +630,7 @@
             *stop = YES;
         }
     }];
-    http.parameters[@"name"] = self.shopNameTf.text;
+//    http.parameters[@"name"] = self.shopNameTf.text;
     //
     http.parameters[@"pic"] = thumailImageKey;
     http.parameters[@"advPic"] = detailImgKeys; //店铺图片

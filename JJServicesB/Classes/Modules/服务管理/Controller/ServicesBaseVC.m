@@ -142,7 +142,8 @@
         getUploadToken.parameters[@"token"] = [ZHUser user].token;
         [getUploadToken postWithSuccess:^(id responseObject) {
             
-            [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//            [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            [TLProgressHUD showWithStatus:nil];
         
             QNUploadManager *uploadManager = [TLUploadManager qnUploadManager];
             NSString *token = responseObject[@"data"][@"uploadToken"];
@@ -204,7 +205,8 @@
             dispatch_group_t group  = _uploadGroup;
             dispatch_group_notify(group, dispatch_get_main_queue(), ^{
                 
-                [MBProgressHUD hideHUDForView:self.view animated:YES];
+                [TLProgressHUD dismiss];
+//                [MBProgressHUD hideHUDForView:self.view animated:YES];
                 
                 if (!coverImgSuccessKey) {
                     return ;
