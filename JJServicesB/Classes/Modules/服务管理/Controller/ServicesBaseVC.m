@@ -255,13 +255,12 @@
 
     __weak typeof(self) weakself = self;
     _picker = [[TLImagePicker alloc] initWithVC:self];
-    _picker.pickFinish = ^(NSDictionary *info){
+    _picker.pickFinish = ^(NSDictionary *info, UIImage *newImg){
         
-        UIImage *image = info[@"UIImagePickerControllerOriginalImage"];
-        NSData *imgData = UIImageJPEGRepresentation(image, ZIP_COEFFICIENT);
+       
     
             //封面图上传
-        weakself.coverImageView.image = [UIImage imageWithData:imgData];
+        weakself.coverImageView.image = newImg;
         weakself.coverImgChanged = YES;
         
         

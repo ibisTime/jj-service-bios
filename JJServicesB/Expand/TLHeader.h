@@ -11,6 +11,7 @@
 
 #import "APICodeHeader.h"
 
+#import "UIImage+TLAdd.h"
 #import "TLAlert.h"
 #import "TLBaseModel.h"
 #import "TLTableView.h"

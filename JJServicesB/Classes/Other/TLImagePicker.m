@@ -69,7 +69,21 @@
     [picker dismissViewControllerAnimated:YES completion:nil];
     
     if (self.pickFinish) {
-        _pickFinish(info);
+        
+        UIImage *image = info[@"UIImagePickerControllerOriginalImage"];
+
+        [image zipBegin:^{
+            
+            [TLProgressHUD showWithStatus:nil];
+            
+        } end:^(UIImage *newImg) {
+            
+            [TLProgressHUD dismiss];
+
+            _pickFinish(info,newImg);
+
+        }];
+        //
     }
 }
 

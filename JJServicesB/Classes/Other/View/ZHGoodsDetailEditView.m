@@ -163,8 +163,20 @@
     UIImage *image = info[@"UIImagePickerControllerOriginalImage"];
     
     //压缩图片--简单压缩
-    NSData *data =  UIImageJPEGRepresentation(image, ZIP_COEFFICIENT);
-    UIImage *newImage = [[UIImage alloc] initWithData:data];
+//    NSData *data =  UIImageJPEGRepresentation(image, ZIP_COEFFICIENT);
+    __block UIImage *newImage = nil;
+    
+    [image zipBegin:^{
+        
+        [TLProgressHUD showWithStatus:nil];
+
+        
+    } end:^(UIImage *newImg) {
+        
+        newImage = newImg;
+        [TLProgressHUD dismiss];
+
+    }];
     
     //可以在上一步，修剪图片
     if (self.photosView.images) {

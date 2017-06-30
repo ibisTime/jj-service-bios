@@ -302,17 +302,16 @@
 
         imagePicker = [[TLImagePicker alloc] initWithVC:self];
         imagePicker.allowsEditing = YES;
-        imagePicker.pickFinish = ^(NSDictionary *info){
+        imagePicker.pickFinish = ^(NSDictionary *info,UIImage *newImg){
             
-            UIImage *image = info[@"UIImagePickerControllerOriginalImage"];
-            NSData *imgData = UIImageJPEGRepresentation(image, 0.1);
+            NSData *imgData = UIImageJPEGRepresentation(newImg, 1);
             weakself.portraitImageView.image = [UIImage imageWithData:imgData];
             //进行上传
             TLUploadManager *manager = [TLUploadManager manager];
             [manager getTokenShowView:weakself.view succes:^(NSString *token) {
                 
                 QNUploadManager *manager = [[QNUploadManager alloc] init];
-                [manager putData:imgData key:[TLUploadManager imageNameByImage:image] token:token complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
+                [manager putData:imgData key:[TLUploadManager imageNameByImage:newImg] token:token complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
                     
                     if (info.error) {
                         [TLAlert alertWithHUDText:@"修改头像失败"];

@@ -10,7 +10,7 @@
 
 @interface TLImagePicker : NSObject<UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 
-@property (nonatomic,copy)  void(^pickFinish)(NSDictionary *info);
+@property (nonatomic,copy)  void(^pickFinish)(NSDictionary *info,UIImage *zipImg);
 
 - (instancetype)initWithVC:(UIViewController *)ctrl;
 @property (nonatomic,assign) BOOL allowsEditing;

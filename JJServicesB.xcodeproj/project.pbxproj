@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2EAC75E71F05E53700BB81E1 /* UIImage+TLAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAC75E61F05E53700BB81E1 /* UIImage+TLAdd.m */; };
 		2EAEAEA51EF2304C0005EC88 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAEAEA41EF2304C0005EC88 /* main.m */; };
 		2EAEAEAE1EF2304C0005EC88 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2EAEAEAC1EF2304C0005EC88 /* Main.storyboard */; };
 		2EAEAEB01EF2304C0005EC88 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2EAEAEAF1EF2304C0005EC88 /* Assets.xcassets */; };
@@ -120,6 +121,8 @@
 
 /* Begin PBXFileReference section */
 		0447F8B70E54C3F51817AD6E /* Pods-JJServicesB.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JJServicesB.debug.xcconfig"; path = "Pods/Target Support Files/Pods-JJServicesB/Pods-JJServicesB.debug.xcconfig"; sourceTree = "<group>"; };
+		2EAC75E51F05E53700BB81E1 /* UIImage+TLAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+TLAdd.h"; path = "3rd/UIImage+TLAdd.h"; sourceTree = "<group>"; };
+		2EAC75E61F05E53700BB81E1 /* UIImage+TLAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+TLAdd.m"; path = "3rd/UIImage+TLAdd.m"; sourceTree = "<group>"; };
 		2EAEAEA01EF2304C0005EC88 /* JJServicesB.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JJServicesB.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EAEAEA41EF2304C0005EC88 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2EAEAEAD1EF2304C0005EC88 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -464,6 +467,8 @@
 		2EAEAEC91EF230F10005EC88 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				2EAC75E51F05E53700BB81E1 /* UIImage+TLAdd.h */,
+				2EAC75E61F05E53700BB81E1 /* UIImage+TLAdd.m */,
 				2EAEAECA1EF230F10005EC88 /* 3rd */,
 				2EAEAED31EF230F10005EC88 /* NSNumber+TLAdd.h */,
 				2EAEAED41EF230F10005EC88 /* NSNumber+TLAdd.m */,
@@ -486,33 +491,9 @@
 		2EAEAECA1EF230F10005EC88 /* 3rd */ = {
 			isa = PBXGroup;
 			children = (
-				2EAEAECB1EF230F10005EC88 /* PYPhotoBrowser */,
 				2EAEAECE1EF230F10005EC88 /* UICKeyChainStore */,
 			);
 			path = 3rd;
-			sourceTree = "<group>";
-		};
-		2EAEAECB1EF230F10005EC88 /* PYPhotoBrowser */ = {
-			isa = PBXGroup;
-			children = (
-				2EAEAECC1EF230F10005EC88 /* Category */,
-				2EAEAECD1EF230F10005EC88 /* Model */,
-			);
-			path = PYPhotoBrowser;
-			sourceTree = "<group>";
-		};
-		2EAEAECC1EF230F10005EC88 /* Category */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Category;
-			sourceTree = "<group>";
-		};
-		2EAEAECD1EF230F10005EC88 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		2EAEAECE1EF230F10005EC88 /* UICKeyChainStore */ = {
@@ -1243,6 +1224,7 @@
 				2EF823CE1EF807480017EDC1 /* CDEduServicesModel.m in Sources */,
 				2EAEAF301EF230F10005EC88 /* TLDatePicker.m in Sources */,
 				2EAEAFCC1EF378490005EC88 /* TLPickerView.m in Sources */,
+				2EAC75E71F05E53700BB81E1 /* UIImage+TLAdd.m in Sources */,
 				2EAEAF201EF230F10005EC88 /* UIColor+Extension.m in Sources */,
 				2EAEAF221EF230F10005EC88 /* UILable+convience.m in Sources */,
 				2EAEAFD51EF3DE7B0005EC88 /* ZHShopInfoChangeVC.m in Sources */,

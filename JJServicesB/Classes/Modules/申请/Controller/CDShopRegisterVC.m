@@ -51,11 +51,10 @@
     //
     __weak typeof(self) weakSelf = self;
     self.imagePicker = [[TLImagePicker alloc] initWithVC:self];
-    [self.imagePicker setPickFinish:^(NSDictionary *info){
+    [self.imagePicker setPickFinish:^(NSDictionary *info,UIImage *newImg){
         
-        UIImage *image = info[@"UIImagePickerControllerOriginalImage"];
-        //        NSData *imgData = UIImageJPEGRepresentation(image, ZIP_COEFFICIENT);
-        weakSelf.imageUpLoadView.imageView.image = image;
+ 
+        weakSelf.imageUpLoadView.imageView.image = newImg;
         
     }];
     

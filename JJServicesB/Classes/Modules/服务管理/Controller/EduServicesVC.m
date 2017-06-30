@@ -83,9 +83,9 @@
     
     __weak typeof(self) weakself = self;
     _picker = [[TLImagePicker alloc] initWithVC:self];
-    _picker.pickFinish = ^(NSDictionary *info){
+    _picker.pickFinish = ^(NSDictionary *info,UIImage *newImg){
         
-        UIImage *image = info[@"UIImagePickerControllerOriginalImage"];
+        UIImage *image = newImg;
         
         if ([sender isEqual:weakself.upload1View.uploadBtn]) {
             

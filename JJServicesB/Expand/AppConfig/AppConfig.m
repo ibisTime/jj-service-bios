@@ -44,11 +44,11 @@ void TLLog(NSString *format, ...) {
         
            self.qiniuDomain = @"http://oru1eha7u.bkt.clouddn.com";
            self.chatKey = @"1139170317178872#zhpay";
-           self.addr = @"http://139.224.200.54:5601"; //test
+           self.addr = @"http://121.43.168.38:5501";
            self.shareBaseUrl = @"http://m.zhenghuijituan.com";
 
         }break;
-            
+        //
         case RunEnvTest: {
             
             
