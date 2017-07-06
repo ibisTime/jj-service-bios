@@ -1108,7 +1108,7 @@
 				TargetAttributes = {
 					2EAEAE9F1EF2304C0005EC88 = {
 						CreatedOnToolsVersion = 8.3.3;
-						DevelopmentTeam = 7K7EFNFZWL;
+						DevelopmentTeam = RT7F257KS6;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -1421,7 +1421,8 @@
 			baseConfigurationReference = 0447F8B70E54C3F51817AD6E /* Pods-JJServicesB.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 7K7EFNFZWL;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = RT7F257KS6;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/JJServicesB/Expand/Chat/HyphenateSDK",
@@ -1434,8 +1435,9 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/JJServicesB/Classes/Other/jpushLib",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = tian.JJServicesB;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zhejiangFocusElectric.servicesb;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -1445,7 +1447,8 @@
 			baseConfigurationReference = 89631A6FB9C1951A880F4F4A /* Pods-JJServicesB.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 7K7EFNFZWL;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = RT7F257KS6;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/JJServicesB/Expand/Chat/HyphenateSDK",
@@ -1458,8 +1461,9 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/JJServicesB/Classes/Other/jpushLib",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = tian.JJServicesB;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zhejiangFocusElectric.servicesb;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
