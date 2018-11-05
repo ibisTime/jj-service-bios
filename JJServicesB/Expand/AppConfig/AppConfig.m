@@ -69,15 +69,18 @@ void TLLog(NSString *format, ...) {
             
 //            self.qiniuDomain = @"http://omxvtiss6.bkt.clouddn.com";
             
-             self.qiniuDomain = @"http://oru1eha7u.bkt.clouddn.com";
+             self.qiniuDomain = @"http://qn.jujiaofuwu.hichengdai.com";
             
 //            self.chatKey = @"1139170317178872#zhpay";
-            self.addr = @"http://121.43.101.148:8901";
+//            self.addr = @"http://121.43.101.148:8901";
+            self.addr = @"http://47.99.204.242:5601";
 //            self.shareBaseUrl = @"http://osszhqb.hichengdai.com/share";
            
         } break;
             
+            
     }
+
     
 }
 

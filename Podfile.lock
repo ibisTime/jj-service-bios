@@ -37,6 +37,18 @@ DEPENDENCIES:
   - SDWebImage
   - SVProgressHUD
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - AFNetworking
+    - HappyDNS
+    - IQKeyboardManager
+    - Masonry
+    - MJExtension
+    - MJRefresh
+    - Qiniu
+    - SDWebImage
+    - SVProgressHUD
+
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   HappyDNS: 06a9fed2796663fd87626dbf02552933265bf059
@@ -50,4 +62,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: fa2d3c8832657059d7ce5d92822b95d4a2fa5f3d
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.5.3

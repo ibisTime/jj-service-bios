@@ -127,9 +127,14 @@
     [getUploadToken postWithSuccess:^(id responseObject) {
         
         [TLProgressHUD showWithStatus:nil];
-        QNUploadManager *uploadManager = [TLUploadManager qnUploadManager];
-        NSString *token = responseObject[@"data"][@"uploadToken"];
         
+        NSString *token = responseObject[@"data"][@"uploadToken"];
+        QNConfiguration *config = [QNConfiguration build:^(QNConfigurationBuilder *builder) {
+            builder.zone = [QNZone zone0];
+        }];
+        
+//        QNUploadManager *uploadManager = [TLUploadManager qnUploadManager];
+        QNUploadManager *uploadManager = [[QNUploadManager alloc] initWithConfiguration:config];
         //封面图片上传
         UIImage *coverImg = self.imageUpLoadView.imageView.image;
         NSString *coverImgKey = [TLUploadManager imageNameByImage:coverImg];
@@ -205,7 +210,8 @@
 //            [[ZHUser user] setUserInfoWithDict:userInfo];
             [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoginNotification object:nil];
  
-            
+            //获取用户信息
+            [UIApplication sharedApplication].keyWindow.rootViewController = [[ZHNavigationController alloc] initWithRootViewController:[ZHHomeVC new]];
             //进行账号密码的存储
 //            UICKeyChainStore *keyChainStore = [UICKeyChainStore keyChainStoreWithService:[UICKeyChainStore defaultService]];
 //            [keyChainStore setString:self.phoneTf.text forKey:KEY_CHAIN_USER_NAME_KEY error:nil];
@@ -226,8 +232,7 @@
 
         
         
-        //获取用户信息
-        [UIApplication sharedApplication].keyWindow.rootViewController = [[ZHNavigationController alloc] initWithRootViewController:[ZHHomeVC new]];
+        
         
         
     } failure:^(NSError *error) {
